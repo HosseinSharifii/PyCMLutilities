@@ -1,6 +1,6 @@
 ---
 title: Multipanel
-has_children: falst
+has_children: false
 grandparent: Demos
 parent: Plots
 nav_order: 1

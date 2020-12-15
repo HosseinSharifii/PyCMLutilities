@@ -1,0 +1,45 @@
+{
+    "layout":
+    {
+        "fig_width": 7,
+        "panel_height": 3
+    },
+    "x_display":
+    {
+        "global_x_field": "time",
+        "label": "Time (s)"
+    },
+    "panels":
+    [
+        {
+            "column": 1,
+            "y_info":
+            {
+                "label": "Line",
+                "series":
+                [
+                    {
+                        "field": "wave_mix"
+                    }
+                ]
+            }
+        },
+        {
+            "column": 2,
+            "y_info":
+            {
+                "label": "Line\nand\nEnvelope",
+                "series":
+                [
+                    {
+                        "field": "wave_mix",
+                        "style": "envelope"
+                    },
+                    {
+                        "field": "wave_mix"
+                    }
+                ]
+            }
+        }
+    ]
+}

@@ -9,8 +9,13 @@ import json
 import pandas as pd
 import numpy as np
 
+from scipy.signal import find_peaks
+
+import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
+from matplotlib.patches import Polygon
+from matplotlib.collections import PatchCollection
 
 def default_formatting():
     formatting = dict()
@@ -103,7 +108,6 @@ def multi_panel_from_flat_data(
             
     no_of_columns = 0
     for p_data in panel_data:
-        print(p_data)
         test_column = p_data['column']
         if (test_column > no_of_columns):
             no_of_columns = test_column
@@ -149,6 +153,8 @@ def multi_panel_from_flat_data(
         r = row_counters[c]-1
         ax.append(fig.add_subplot(spec[r,c]))
         
+        patches = []
+        
         # Cycle through the y_data
         for j,y_d in enumerate(p_data['y_info']['series']):
             # Set the plot style to line if it is missing
@@ -187,7 +193,26 @@ def multi_panel_from_flat_data(
                         linewidth = formatting['data_linewidth'],
                         clip_on=False)
             if (y_d['style'] == 'envelope'):
-                print('Need to add envelope')
+                # y_top = pd.Series(y).rolling(nn, min_periods=1).max().to_numpy()
+                # y_bottom = pd.Series(y).rolling(nn, min_periods=1).min().to_numpy()
+                top_ind,_ = find_peaks(y)
+                x_top = x[top_ind]
+                y_top = y[top_ind]
+                bot_ind,_ = find_peaks(-y)
+                x_bot = x[bot_ind]
+                y_bot = y[bot_ind]
+                y = np.concatenate((y_top, y_bot[-1:0:-1]))
+                x = np.concatenate((x_top, x_bot[-1:0:-1]))
+                xy = [x,y]
+                xy = np.array(np.array(xy).transpose())
+                polygon = Polygon(xy,True, clip_on=False)
+                patches.append(polygon)
+                
+        # Add patches
+        p = PatchCollection(patches,
+                            cmap=matplotlib.cm.jet,
+                            alpha=0.4)
+        ax[i].add_collection(p)
                 
         # Tidy up axes and legends
         
@@ -208,7 +233,6 @@ def multi_panel_from_flat_data(
                 y_scaling = p_data['y_info']['y_scaling']
             ylim = deduce_axis_limits(ylim, mode_string=y_scaling)
         
-        print(ylim)
         ax[i].set_ylim(ylim)
         ax[i].set_yticks(ylim)
         
@@ -316,6 +340,6 @@ def multiple_less_than(v, multiple=0.5):
     return v
             
 if __name__ == "__main__":
-    fig = multi_panel_from_flat_file()
+    (fig,ax) = multi_panel_from_flat_data()
     plt.close(fig)
     

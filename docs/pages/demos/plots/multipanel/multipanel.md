@@ -46,6 +46,9 @@ The images below should be written to `<repo>/demos/demos_plots/demos_multi_pane
 ### 1 x 1 wide
 ![1 x 1 wide](images/1_1_wide.png)
 
+### 1 x 1 wide
+![1 x 1 height](images/1_1_height.png)
+
 ### 1 x 1 x-display
 ![1 x 1 x-display](images/1_1_x_display.png)
 
@@ -57,6 +60,9 @@ The images below should be written to `<repo>/demos/demos_plots/demos_multi_pane
 
 ### 1 x 3 wide
 ![1 x 3 wide](images/1_3_wide.png)
+
+### 1 x 2 wide
+![1 x 2 envelope](images/1_2_envelope.png)
 
 ### 1 x 3 wide scaling
 ![1 x 3 wide scaling](images/1_3_wide_scaling.png)

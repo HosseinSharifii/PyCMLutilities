@@ -1,0 +1,54 @@
+{
+    "layout":
+    {
+        "fig_width": 7
+    },
+    "x_display":{
+        "global_x_field": "time",
+        "label": "Time (s)"
+    },
+    "panels":
+    [
+        {
+            "column": 1,
+            "y_info":
+            {
+                "label": "Default",
+                "series":
+                [
+                    {
+                        "field": "medium_wave"
+                    }
+                ]
+            }
+        },
+        {
+            "column": 2,
+            "y_info":
+            {
+                "label": "Close\nfit",
+                "y_scaling": "close_fit",
+                "series":
+                [
+                    {
+                        "field": "medium_wave"
+                    }
+                ]
+            }
+        },
+        {
+            "column": 3,
+            "y_info":
+            {
+                "label": "Defined\nticks\n[-2,12]",
+                "ticks": [-2,12],
+                "series":
+                [
+                    {
+                        "field": "medium_wave"
+                    }
+                ]
+            }
+        }
+    ]
+}

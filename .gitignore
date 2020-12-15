@@ -1,3 +1,7 @@
+# Repo specific
+demos/demos_plots/demos_multi_panel/temp/*
+docs/_site/*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

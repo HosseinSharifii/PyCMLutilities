@@ -1,5 +1,6 @@
 ---
 title: Plots
+parent: Demos
 has_children: True
 nav_order: 1
 ---

@@ -46,7 +46,7 @@ The images below should be written to `<repo>/demos/demos_plots/demos_multi_pane
 ### 1 x 1 wide
 ![1 x 1 wide](images/1_1_wide.png)
 
-### 1 x 1 wide
+### 1 x 1 height
 ![1 x 1 height](images/1_1_height.png)
 
 ### 1 x 1 x-display

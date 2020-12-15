@@ -14,29 +14,11 @@
             "column": 1,
             "y_info":
             {
-                "label": "Line",
+                "label": "Wave\nmix",
                 "series":
                 [
                     {
                         "field": "wave_mix"
-                    }
-                ]
-            }
-        },
-        {
-            "column": 2,
-            "y_info":
-            {
-                "label": "Line\nand\nEnvelope",
-                "series":
-                [
-                    {
-                        "field": "wave_mix",
-                        "style": "envelope"
-                    },
-                    {
-                        "field": "wave_mix",
-                        "field_label": ""
                     }
                 ]
             }

@@ -61,7 +61,7 @@ The images below should be written to `<repo>/demos/demos_plots/demos_multi_pane
 ### 1 x 3 wide
 ![1 x 3 wide](images/1_3_wide.png)
 
-### 1 x 2 wide
+### 1 x 2 envelope
 ![1 x 2 envelope](images/1_2_envelope.png)
 
 ### 1 x 3 wide scaling

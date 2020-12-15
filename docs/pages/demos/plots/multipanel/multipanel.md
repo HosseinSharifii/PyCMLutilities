@@ -1,7 +1,7 @@
 ---
 title: Multipanel
 has_children: false
-grandparent: demos
+grand_parent: demos
 parent: plots
 nav_order: 1
 ---

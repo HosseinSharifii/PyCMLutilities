@@ -68,10 +68,10 @@ The images below should be written to `<repo>/demos/demos_plots/demos_multi_pane
 ![2 x 2](images/2_2.png)
 
 ### 2 x 2 multi-series
-![2 x 2 multi-series labels](images/2_2_multiseries.png)
+![2 x 2 multi-series labels](images/2_2_multi_series.png)
 
 ### 2 x 2 multi-series labels
-![2 x 2 multi-series with labels](images/2_2_multiseries_labels.png)
+![2 x 2 multi-series with labels](images/2_2_multi_series_labels.png)
 
 ### 5 x 2
 ![5 x 2](images/5_2.png)

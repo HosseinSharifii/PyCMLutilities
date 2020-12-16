@@ -5,11 +5,54 @@ Created on Mon Dec 14 23:40:08 2020
 @author: ken
 """
 import os
+import numpy as np
 import matplotlib.pyplot as plt
 
 from plots import multi_panel as mp
 
-def demo():
+def run_demos():
+    
+    annotate_plot()
+    
+    #cycle_plots()
+        
+def annotate_plot():
+    
+    data_file_string = 'data/test_data.xlsx'
+    template_file_string = 'json/2_2.json'
+    image_file_string = 'temp/2_2_annotation.png'
+
+    # Adjust input files for current path
+    current_dir = os.path.dirname(os.path.realpath(__file__))
+    
+    data_file_string = os.path.join(
+            current_dir,data_file_string)
+    template_file_string = os.path.join(
+            current_dir, template_file_string)
+    image_file_string = os.path.join(
+            current_dir, image_file_string)
+    
+    # Make a figure
+    fig, ax = mp.multi_panel_from_flat_data(
+            data_file_string=data_file_string,
+            template_file_string=template_file_string)
+
+    # Add annotations
+    ax[0].text(10,2,'Demo text',fontname='Arial')
+    ax[1].plot([0,15],[3,3],'r--')
+    
+    for a in ax:
+        yy = np.asarray(a.get_ylim())
+        a.plot([5,5],yy,'--',color='#FF45FF')
+    
+    # Save if required
+    if image_file_string:
+        print('Saving figure to %s' % image_file_string)
+        fig.savefig(image_file_string)
+    
+    plt.close(fig)
+
+def cycle_plots():
     
     data_file_string = 'data/test_data.xlsx'
     image_dir = 'temp'
@@ -23,7 +66,7 @@ def demo():
     json_files.append('')
     
     data_file_string = os.path.join(
-            current_dir,'data','test_data.xlsx')
+            current_dir,data_file_string)
     
     for js in json_files:
         if (js == ''):

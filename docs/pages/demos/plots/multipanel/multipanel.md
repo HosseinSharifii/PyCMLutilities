@@ -84,3 +84,7 @@ The images below should be written to `<repo>/demos/demos_plots/demos_multi_pane
 
 ### 5 x 2 margins
 ![5 x 2 margins](images/5_2_margins.png)
+
+### Annotate plots
+See `annotate_plot()` in `<repo>/demos/demos_plots/demos_multi_panel/demos_multi_panel_code.py` for a demonstration of how to annotate a figure
+![2 x 2 annotation](images/2_2_annotation.png)

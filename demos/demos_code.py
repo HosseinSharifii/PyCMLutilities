@@ -21,9 +21,8 @@ def demos(demo_group):
         p.y_pCa_plot(pCa, f, draw_fit=True)
         
     if (demo_group == "plots_multi_panel"):
-        print('ken')
         from .demos_plots.demos_multi_panel import demos_multi_panel_code as dmp
-        dmp.demo()
+        dmp.run_demos()
         
         
         

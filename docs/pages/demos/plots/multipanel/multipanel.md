@@ -37,6 +37,8 @@ The images below should be written to `<repo>/demos/demos_plots/demos_multi_pane
 
 ## Output
 
+***
+
 ### Default - no layout
 ![blank](images/blank_json.png)
 
@@ -45,8 +47,12 @@ The images below should be written to `<repo>/demos/demos_plots/demos_multi_pane
 ### 1 x 1
 ![Simple 1 x 1](images/1_1.png)
 
+***
+
 ### 1 x 1 wide
 ![1 x 1 wide](images/1_1_wide.png)
+
+***
 
 ### 1 x 1 x-display
 ![1 x 1 x-display](images/1_1_x_display.png)

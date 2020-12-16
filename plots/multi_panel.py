@@ -33,7 +33,7 @@ def default_formatting():
     formatting['legend_bbox_to_anchor'] = [1.05, 1]
     formatting['legend_fontsize'] = 9
     formatting['tick_fontsize'] = 11
-    formatting['patch_alpha'] = 0.5
+    formatting['patch_alpha'] = 0.3
     
     return formatting
 
@@ -49,6 +49,12 @@ def default_layout():
     layout['grid_hspace'] = 0.1
     
     return layout
+
+def default_processing():
+    processing = dict()
+    processing['envelope_peak_prominence'] = 0.2
+    
+    return processing
 
 def multi_panel_from_flat_data(
         data_file_string = [],
@@ -70,8 +76,20 @@ def multi_panel_from_flat_data(
         for entry in template_data['formatting']:
             formatting[entry] = template_data['formatting'][entry]
 
+    # Pull default processing
+    processing = default_processing()
+    if 'processing' in template_data:
+        for entry in template_data['processing']:
+            processing[entry] = template_data['processing'][entry]
+
     # Read in the data
-    pandas_data = pd.read_excel(data_file_string, sheet_name=excel_sheet)
+    file_type = data_file_string.split('.')[-1]
+    if file_type == 'xlsx':
+        pandas_data = pd.read_excel(data_file_string,
+                                    sheet_name=excel_sheet)
+    if file_type == 'csv':
+        pandas_data = pd.read_csv(data_file_string)
+        
     
     # Try to work out x data
     if 'x_display' in template_data:
@@ -185,6 +203,9 @@ def multi_panel_from_flat_data(
             x = x[vi]
             y = pandas_data[y_d['field']].to_numpy()[vi]
             
+            if 'scaling_factor' in y_d:
+                y = y * y_d['scaling_factor']
+            
             # Track min and max y
             if (j==0):
                 min_x = x[0]
@@ -217,10 +238,12 @@ def multi_panel_from_flat_data(
             if (y_d['style'] == 'envelope'):
                 # y_top = pd.Series(y).rolling(nn, min_periods=1).max().to_numpy()
                 # y_bottom = pd.Series(y).rolling(nn, min_periods=1).min().to_numpy()
-                top_ind,_ = find_peaks(y)
+                top_ind,_ = find_peaks(y, prominence =
+                                       processing['envelope_peak_prominence']*np.amax(y))
                 x_top = x[top_ind]
                 y_top = y[top_ind]
-                bot_ind,_ = find_peaks(-y)
+                bot_ind,_ = find_peaks(-y, prominence = 
+                                       processing['envelope_peak_prominence']*np.amax(-y))
                 x_bot = x[bot_ind]
                 y_bot = y[bot_ind]
                 y = np.concatenate((y_top, y_bot[-1:0:-1]))

@@ -15,13 +15,39 @@ def run_demos():
     annotate_plot()
     
     cycle_plots()
-    # single_run()
+    pymyovent_example()
+    
+def pymyovent_example():
+    
+    data_file_string = 'data/pymyovent_test.csv'
+    template_file_string = 'json/pymyovent.json'
+    image_file_string = 'temp/pymyovent.png'
+    
+    # Adjust input files for current path
+    current_dir = os.path.dirname(os.path.realpath(__file__))
+    
+    data_file_string = os.path.join(
+            current_dir,data_file_string)
+    template_file_string = os.path.join(
+            current_dir, template_file_string)
+    image_file_string = os.path.join(
+            current_dir, image_file_string)
+
+    # Make a figure
+    fig, ax = mp.multi_panel_from_flat_data(
+            data_file_string=data_file_string,
+            template_file_string=template_file_string,
+            output_image_file_string=image_file_string)
+
+    # Close
+    plt.close(fig)    
+
     
 def single_run():
 
-    data_file_string = 'data/test_data.xlsx'
-    template_file_string = 'json/2_2_envelope.json'
-    image_file_string = 'temp/2_2_envelope.png'
+    data_file_string = 'c:/temp/pymyovent_test.csv'
+    template_file_string = 'json/pymyovent.json'
+    image_file_string = 'temp/pymyovent.png'
 
     # Adjust input files for current path
     current_dir = os.path.dirname(os.path.realpath(__file__))
@@ -90,6 +116,7 @@ def cycle_plots():
     json_files = [f for f in os.listdir(json_dir) 
                   if os.path.isfile(os.path.join(json_dir,f))]
     json_files.append('')
+    json_files.remove('pymyovent.json')
     
     data_file_string = os.path.join(
             current_dir,data_file_string)

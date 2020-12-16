@@ -273,3 +273,12 @@ The images below should be written to `<repo>/demos/demos_plots/demos_multi_pane
 See `annotate_plot()` in `<repo>/demos/demos_plots/demos_multi_panel/demos_multi_panel_code.py` for a demonstration of how to add annotations as in the example below.
 
 ![2 x 2 annotation](images/2_2_annotation.png)
+
+***
+
+### A more complicated example
+
+This figure was generated using `<repo>/demos/demos_plots/demos_multi_panel/json.pymovent.json`
+
+![pymyovent](images/pymyovent.png)
+

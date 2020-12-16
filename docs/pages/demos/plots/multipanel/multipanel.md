@@ -42,21 +42,29 @@ Here is an example file (2x2_envelope.json) that includes most of the current fe
 
 ````
 {
-    "layout": {
+    "layout":
+    {
         "fig_width": 7,
-        "panel_height": 2,
+        "panel_height": 1.5,
         "top_margin": 0.5,
-        "right_margin": 0.5 },
-    "formatting": {
-        "tick_fontsize": 10 },
-    "x_display": {
+        "right_margin": 0.5
+    },
+    "formatting":
+    {
+        "tick_fontsize": 10,
+        "legend_fontsize": 8    
+    },
+    "x_display":
+    {
         "global_x_field": "time",
-        "label": "Time (s)" },
-    "panels": 
+        "label": "Time (s)"
+    },
+    "panels":
     [
         {
             "column": 1,
-            "y_info": {
+            "y_info":
+            {
                 "label": "Line",
                 "series":
                 [
@@ -69,7 +77,8 @@ Here is an example file (2x2_envelope.json) that includes most of the current fe
         },
         {
             "column": 2,
-            "y_info": {
+            "y_info":
+            {
                 "label": "Line\nand\nEnvelope",
                 "series":
                 [
@@ -87,7 +96,8 @@ Here is an example file (2x2_envelope.json) that includes most of the current fe
         },
         {
             "column": 1,
-            "y_info": {
+            "y_info":
+            {
                 "label": "Mixture",
                 "series":
                 [
@@ -114,7 +124,8 @@ Here is an example file (2x2_envelope.json) that includes most of the current fe
         },
         {
             "column": 2,
-            "y_info": {
+            "y_info":
+            {
                 "label": "Mixture",
                 "series":
                 [
@@ -140,6 +151,11 @@ Here is an example file (2x2_envelope.json) that includes most of the current fe
                         "field": "fast_wave",
                         "style": "envelope",
                         "field_label": "Fast Envelope"
+                    },
+                    {
+                        "field": "slow_wave",
+                        "field_label": "Slow line",
+                        "field_color": 4
                     }
                 ]
             }

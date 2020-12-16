@@ -9,7 +9,8 @@
     "formatting":
     {
         "tick_fontsize": 10,
-        "legend_fontsize": 8    
+        "legend_fontsize": 8,
+        "data_linewidth": 1    
     },
     "x_display":
     {

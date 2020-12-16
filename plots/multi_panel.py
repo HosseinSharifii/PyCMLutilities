@@ -28,7 +28,7 @@ def default_formatting():
     formatting['x_label_pad'] = 0
     formatting['y_label_rotation'] = 0
     formatting['y_label_fontsize'] = 12
-    formatting['y_label_pad'] = 25
+    formatting['y_label_pad'] = 30
     formatting['legend_location'] = 'upper left'
     formatting['legend_bbox_to_anchor'] = [1.05, 1]
     formatting['legend_fontsize'] = 9

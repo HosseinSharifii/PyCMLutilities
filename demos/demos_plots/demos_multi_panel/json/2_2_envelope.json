@@ -2,7 +2,13 @@
     "layout":
     {
         "fig_width": 7,
-        "panel_height": 2
+        "panel_height": 2,
+        "top_margin": 0.5,
+        "right_margin": 0.5
+    },
+    "formatting":
+    {
+        "tick_fontsize": 10    
     },
     "x_display":
     {

@@ -27,6 +27,132 @@ multi_panel_from_flat_data(
 
 The images below were generated from the same excel file by passing in the templates stored in `<repo>/demos/demos_plots/demos_multi_panel/json`.
 
+## Example template
+
+Template files lay out the structure in JSON format. You can over-write the default layouts and formatting by adding fields to the layout{} and formatting{} sections.
+
+Every panel is defined with a column number. The number of panel columns is the largest column number in the template. Panels are added sequentially to each column. The number of panel rows in the figure is the number of panels in the longest column.
+
+Here is an example file (2x2_envelope) that includes most of the current features.
+
+````
+{
+    "layout":
+    {
+        "fig_width": 7,
+        "panel_height": 2,
+        "top_margin": 0.5,
+        "right_margin": 0.5
+    },
+    "formatting":
+    {
+        "tick_fontsize": 10    
+    },
+    "x_display":
+    {
+        "global_x_field": "time",
+        "label": "Time (s)"
+    },
+    "panels":
+    [
+        {
+            "column": 1,
+            "y_info":
+            {
+                "label": "Line",
+                "series":
+                [
+                    {
+                        "field": "wave_mix",
+                        "field_label": "Wave mix"
+                    }
+                ]
+            }
+        },
+        {
+            "column": 2,
+            "y_info":
+            {
+                "label": "Line\nand\nEnvelope",
+                "series":
+                [
+                    {
+                        "field": "wave_mix",
+                        "style": "envelope",
+                        "field_label": "Envelope"
+                    },
+                    {
+                        "field": "wave_mix",
+                        "field_label": "Line"
+                    }
+                ]
+            }
+        },
+        {
+            "column": 1,
+            "y_info":
+            {
+                "label": "Mixture",
+                "series":
+                [
+                    {
+                        "field": "wave_mix",
+                        "style": "envelope",
+                        "field_label": "Envelope"
+                    },
+                    {
+                        "field": "wave_mix",
+                        "field_label": "Line"
+                    },
+                    {
+                        "field": "medium_wave",
+                        "style": "envelope",
+                        "field_label": "Medium Env"
+                    },
+                    {
+                        "field": "medium_wave",
+                        "field_label": "Medium Line"
+                    }
+                ]
+            }
+        },
+        {
+            "column": 2,
+            "y_info":
+            {
+                "label": "Mixture",
+                "series":
+                [
+                    {
+                        "field": "wave_mix",
+                        "style": "envelope",
+                        "field_label": "Envelope"
+                    },
+                    {
+                        "field": "wave_mix",
+                        "field_label": "Line"
+                    },
+                    {
+                        "field": "medium_wave",
+                        "style": "envelope",
+                        "field_label": "Medium Env"
+                    },
+                    {
+                        "field": "medium_wave",
+                        "field_label": "Medium Line"
+                    },
+                    {
+                        "field": "fast_wave",
+                        "style": "envelope",
+                        "field_label": "Fast Envelope"
+                    }
+                ]
+            }
+        }
+    ]
+}
+````
+
 ## Demo
 
 + Open a python prompt

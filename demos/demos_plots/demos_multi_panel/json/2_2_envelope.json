@@ -75,7 +75,8 @@
                     },
                     {
                         "field": "medium_wave",
-                        "field_label": "Medium Line"
+                        "field_label": "Medium Line",
+                        "field_color": 4
                     }
                 ]
             }

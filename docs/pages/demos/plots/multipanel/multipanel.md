@@ -278,7 +278,7 @@ See `annotate_plot()` in `<repo>/demos/demos_plots/demos_multi_panel/demos_multi
 
 ### A more complicated example
 
-This figure was generated using `<repo>/demos/demos_plots/demos_multi_panel/json.pymovent.json`
+This figure was generated using `def pymyovent_example()` in `<repo>/demos/demos_plots/demos_multi_panel/demos_multi_panel_code.py`.
 
 ![pymyovent](images/pymyovent.png)
 

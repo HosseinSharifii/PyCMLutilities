@@ -40,50 +40,88 @@ The images below should be written to `<repo>/demos/demos_plots/demos_multi_pane
 ### Default - no layout
 ![blank](images/blank_json.png)
 
+***
+
 ### 1 x 1
 ![Simple 1 x 1](images/1_1.png)
 
 ### 1 x 1 wide
 ![1 x 1 wide](images/1_1_wide.png)
 
+### 1 x 1 x-display
+![1 x 1 x-display](images/1_1_x_display.png)
+
+***
+
 ### 1 x 1 height
 ![1 x 1 height](images/1_1_height.png)
 
-### 1 x 1 x-display
-![1 x 1 x-display](images/1_1_x_display.png)
+***
 
 ### 1 x 1 x-ticks
 ![1 x 1 x-ticks](images/1_1_x_ticks.png)
 
+***
+
 ### 1 x 2 wide
 ![1 x 2 wide](images/1_2_wide.png)
+
+***
 
 ### 1 x 3 wide
 ![1 x 3 wide](images/1_3_wide.png)
 
-### 1 x 2 envelope
-![1 x 2 envelope](images/1_2_envelope.png)
+***
 
 ### 1 x 3 wide scaling
 ![1 x 3 wide scaling](images/1_3_wide_scaling.png)
 
+***
+
+### 1 x 2 envelope
+![1 x 2 envelope](images/1_2_envelope.png)
+
+***
+
 ### 2-2 partial
 ![2 x 2 partial](images/2_2_partial.png)
+
+***
 
 ### 2 x 2
 ![2 x 2](images/2_2.png)
 
+***
+
 ### 2 x 2 multi-series
 ![2 x 2 multi-series labels](images/2_2_multi_series.png)
+
+***
 
 ### 2 x 2 multi-series labels
 ![2 x 2 multi-series with labels](images/2_2_multi_series_labels.png)
 
+***
+
+### 2 x 2 envelope partial
+![2 x 2 envelope partial](images/2_2_envelope_partial.png)
+
+***
+
+### 2 x 2 envelope
+![2 x 2 envelope](images/2_2_envelope.png)
+
+***
+
 ### 5 x 2
 ![5 x 2](images/5_2.png)
 
+***
+
 ### 5 x 2 margins
 ![5 x 2 margins](images/5_2_margins.png)
+
+***
 
 ### Annotate plots
 See `annotate_plot()` in `<repo>/demos/demos_plots/demos_multi_panel/demos_multi_panel_code.py` for a demonstration of how to annotate a figure

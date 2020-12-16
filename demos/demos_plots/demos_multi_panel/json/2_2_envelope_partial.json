@@ -39,6 +39,34 @@
                     }
                 ]
             }
+        },
+        {
+            "column": 1,
+            "y_info":
+            {
+                "label": "Mixture",
+                "series":
+                [
+                    {
+                        "field": "wave_mix",
+                        "style": "envelope",
+                        "field_label": "Envelope"
+                    },
+                    {
+                        "field": "wave_mix",
+                        "field_label": "Line"
+                    },
+                    {
+                        "field": "medium_wave",
+                        "style": "envelope",
+                        "field_label": "Medium Env"
+                    },
+                    {
+                        "field": "medium_wave",
+                        "field_label": "Medium Line"
+                    }
+                ]
+            }
         }
     ]
 }

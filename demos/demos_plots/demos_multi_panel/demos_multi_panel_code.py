@@ -14,7 +14,33 @@ def run_demos():
     
     annotate_plot()
     
-    #cycle_plots()
+    cycle_plots()
+    # single_run()
+    
+def single_run():
+
+    data_file_string = 'data/test_data.xlsx'
+    template_file_string = 'json/2_2_envelope.json'
+    image_file_string = 'temp/2_2_envelope.png'
+
+    # Adjust input files for current path
+    current_dir = os.path.dirname(os.path.realpath(__file__))
+    
+    data_file_string = os.path.join(
+            current_dir,data_file_string)
+    template_file_string = os.path.join(
+            current_dir, template_file_string)
+    image_file_string = os.path.join(
+            current_dir, image_file_string)
+
+    # Make a figure
+    fig, ax = mp.multi_panel_from_flat_data(
+            data_file_string=data_file_string,
+            template_file_string=template_file_string,
+            output_image_file_string=image_file_string)
+
+    # Close
+    plt.close(fig)    
         
 def annotate_plot():
     
@@ -89,5 +115,3 @@ def cycle_plots():
             output_image_file_string=image_file_string)
     
         plt.close(fig)
-        
-    print('ken was here')

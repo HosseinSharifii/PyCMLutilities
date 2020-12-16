@@ -14,7 +14,9 @@ from scipy.signal import find_peaks
 import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
-from matplotlib.patches import Polygon
+from matplotlib.lines import Line2D
+from matplotlib import patches as pat
+from matplotlib.patches import Polygon, Patch
 from matplotlib.collections import PatchCollection
 
 def default_formatting():
@@ -31,6 +33,7 @@ def default_formatting():
     formatting['legend_bbox_to_anchor'] = [1.05, 1]
     formatting['legend_fontsize'] = 9
     formatting['tick_fontsize'] = 11
+    formatting['patch_alpha'] = 0.5
     
     return formatting
 
@@ -142,7 +145,6 @@ def multi_panel_from_flat_data(
                              wspace=layout['grid_wspace'],
                              hspace=layout['grid_hspace'])
 
-
     # Now return to panel data, scan through adding plots as you go
     row_counters = np.zeros(no_of_columns, dtype=int)
     for i,p_data in enumerate(panel_data):
@@ -153,7 +155,14 @@ def multi_panel_from_flat_data(
         r = row_counters[c]-1
         ax.append(fig.add_subplot(spec[r,c]))
         
-        patches = []
+        legend_symbols = []
+        legend_strings = []
+        
+        # Set up your colors
+        prop_cycle = plt.rcParams['axes.prop_cycle']
+        colors = prop_cycle.by_key()['color']
+        line_counter = 0
+        patch_counter = 0
         
         # Cycle through the y_data
         for j,y_d in enumerate(p_data['y_info']['series']):
@@ -162,8 +171,8 @@ def multi_panel_from_flat_data(
                 y_d['style'] = 'line'
             # Fill in a blank label if it is missing
             if 'field_label' not in y_d:
-                y_d['field_label'] = y_d['field']
-        
+                y_d['field_label'] = []
+                
             # Pull off the data
             if 'x_field' not in p_data:
                 p_data['x_field'] = x_display['global_x_field']
@@ -189,9 +198,18 @@ def multi_panel_from_flat_data(
             
             # Plot line depending on style
             if (y_d['style'] == 'line'):
-                ax[i].plot(x, y, label= y_d['field_label'],
+                ax[i].plot(x, y,
                         linewidth = formatting['data_linewidth'],
+                        color=colors[line_counter],
                         clip_on=False)
+                line_counter +=1
+                if y_d['field_label']:
+                    legend_symbols.append(
+                        Line2D([0], [0],
+                               color=ax[i].lines[-1].get_color(),
+                               lw=formatting['data_linewidth']))
+                    legend_strings.append(y_d['field_label'])
+                    
             if (y_d['style'] == 'envelope'):
                 # y_top = pd.Series(y).rolling(nn, min_periods=1).max().to_numpy()
                 # y_bottom = pd.Series(y).rolling(nn, min_periods=1).min().to_numpy()
@@ -205,14 +223,18 @@ def multi_panel_from_flat_data(
                 x = np.concatenate((x_top, x_bot[-1:0:-1]))
                 xy = [x,y]
                 xy = np.array(np.array(xy).transpose())
-                polygon = Polygon(xy,True, clip_on=False)
-                patches.append(polygon)
+                polygon = pat.Polygon(xy, True, clip_on=False,
+                                      fc=colors[patch_counter],
+                                      alpha=formatting['patch_alpha'])
+                ax[i].add_patch(polygon)
                 
-        # Add patches
-        p = PatchCollection(patches,
-                            cmap=matplotlib.cm.jet,
-                            alpha=0.4)
-        ax[i].add_collection(p)
+                if y_d['field_label']:
+                    legend_symbols.append(
+                        Patch(facecolor=colors[patch_counter],
+                            alpha=formatting['patch_alpha']))
+                    legend_strings.append(y_d['field_label'])
+
+                patch_counter = patch_counter+1
                 
         # Tidy up axes and legends
         
@@ -272,15 +294,15 @@ def multi_panel_from_flat_data(
                       fontsize = formatting['y_label_fontsize'],
                       rotation = formatting['y_label_rotation'])
         
-        # Add legend if >1 series
-        if (len(p_data['y_info']['series'])>1):
-            ax[i].legend(loc=formatting['legend_location'],
-                      bbox_to_anchor=(formatting['legend_bbox_to_anchor'][0],
-                                      formatting['legend_bbox_to_anchor'][1]),
-                      prop={'family': formatting['fontname'],
-                            'size': formatting['legend_fontsize']}
-                      )
-    
+        # Add legend if it exists
+        if legend_symbols:
+            ax[i].legend(legend_symbols, legend_strings,
+                         loc=formatting['legend_location'],
+                         bbox_to_anchor=(formatting['legend_bbox_to_anchor'][0],
+                                         formatting['legend_bbox_to_anchor'][1]),
+                         prop={'family': formatting['fontname'],
+                               'size': formatting['legend_fontsize']})
+   
     # Tidy overall figure
     # Move plots inside margins
     lhs = layout['left_margin']/layout['fig_width']

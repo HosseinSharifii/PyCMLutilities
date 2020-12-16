@@ -36,7 +36,7 @@ Template files lay out the structure in JSON format. You can over-write the defa
 
 Every panel is defined with a column number. The number of panel columns is the largest column number in the template. Panels are added sequentially to each column. The number of panel rows in the figure is the number of panels in the longest column.
 
-Here is an example file (2x2_envelope) that includes most of the current features.
+Here is an example file (2x2_envelope.json) that includes most of the current features.
 
 ````
 {

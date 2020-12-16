@@ -12,9 +12,9 @@ from plots import multi_panel as mp
 
 def run_demos():
     
-    annotate_plot()
+    # annotate_plot()
     
-    cycle_plots()
+    # cycle_plots()
     pymyovent_example()
     
 def pymyovent_example():

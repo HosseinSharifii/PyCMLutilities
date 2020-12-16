@@ -10,7 +10,8 @@
     {
         "tick_fontsize": 10,
         "legend_fontsize": 8,
-        "data_linewidth": 1    
+        "data_linewidth": 0.75,
+        "y_label_pad": 20  
     },
     "x_display":
     {

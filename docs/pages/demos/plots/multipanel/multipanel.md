@@ -9,7 +9,9 @@ nav_order: 1
 
 ## Overview
 
-The [multipanel module](https://github.com/Campbell-Muscle-Lab/PyCMLutilities/blob/main/plots/multi_panel.py) creates figures with panels showing 1 or more columns from a flat data file.
+The [multipanel module](https://github.com/Campbell-Muscle-Lab/PyCMLutilities/blob/main/plots/multi_panel.py) creates figures with panels showing 1 or more columns from a flat data file. Here is an example.
+
+![2_2_envelope](images/2_2_envelope.png)
 
 The code takes 3 inputs:
 + an Excel file
@@ -19,10 +21,10 @@ The code takes 3 inputs:
 For example
 
 ````
-multi_panel_from_flat_data(
-    excel_file_string = 'test.xlsx',
-    template_file_string = 'template.json',
-    output_image_file_string = 'image.png')
+(fig, ax) = multi_panel_from_flat_data(
+                excel_file_string = 'test.xlsx',
+                template_file_string = 'template.json',
+                output_image_file_string = 'image.png')
 ````
 
 The images below were generated from a single excel file using the templates stored in `<repo>/demos/demos_plots/demos_multi_panel/json`.
@@ -40,28 +42,21 @@ Here is an example file (2x2_envelope.json) that includes most of the current fe
 
 ````
 {
-    "layout":
-    {
+    "layout": {
         "fig_width": 7,
         "panel_height": 2,
         "top_margin": 0.5,
-        "right_margin": 0.5
-    },
-    "formatting":
-    {
-        "tick_fontsize": 10    
-    },
-    "x_display":
-    {
+        "right_margin": 0.5 },
+    "formatting": {
+        "tick_fontsize": 10 },
+    "x_display": {
         "global_x_field": "time",
-        "label": "Time (s)"
-    },
-    "panels":
+        "label": "Time (s)" },
+    "panels": 
     [
         {
             "column": 1,
-            "y_info":
-            {
+            "y_info": {
                 "label": "Line",
                 "series":
                 [
@@ -74,8 +69,7 @@ Here is an example file (2x2_envelope.json) that includes most of the current fe
         },
         {
             "column": 2,
-            "y_info":
-            {
+            "y_info": {
                 "label": "Line\nand\nEnvelope",
                 "series":
                 [
@@ -93,8 +87,7 @@ Here is an example file (2x2_envelope.json) that includes most of the current fe
         },
         {
             "column": 1,
-            "y_info":
-            {
+            "y_info": {
                 "label": "Mixture",
                 "series":
                 [
@@ -121,8 +114,7 @@ Here is an example file (2x2_envelope.json) that includes most of the current fe
         },
         {
             "column": 2,
-            "y_info":
-            {
+            "y_info": {
                 "label": "Mixture",
                 "series":
                 [
@@ -259,5 +251,9 @@ The images below should be written to `<repo>/demos/demos_plots/demos_multi_pane
 ***
 
 ### Annotate plots
-See `annotate_plot()` in `<repo>/demos/demos_plots/demos_multi_panel/demos_multi_panel_code.py` for a demonstration of how to annotate a figure
+
+`multi_panel_from_flat_data()` returns a tuple containing a handle to the figure and a handle to an array of the `pyplot` axes. You can use the axis handles to annotate each panel after the main figure has been created.
+
+See `annotate_plot()` in `<repo>/demos/demos_plots/demos_multi_panel/demos_multi_panel_code.py` for a demonstration of how to add annotations as in the example below.
+
 ![2 x 2 annotation](images/2_2_annotation.png)

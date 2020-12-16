@@ -15,7 +15,7 @@ def create_test_data():
     d['up'] = np.linspace(2,4,n)
     d['down'] = np.linspace(4,1,n)
     d['crossing'] = np.linspace(-1,2,n)
-    d['slow_wave'] = np.sin(d['time']*2*np.pi*0.1)
+    d['slow_wave'] = 2+np.sin(d['time']*2*np.pi*0.1)
     d['medium_wave'] = np.linspace(4,8,n) + 0.7*np.sin(d['time']*2*np.pi*1)
     d['fast_wave'] = 7+1.5*np.sin(d['time']*2*np.pi*20)
     d['wave_mix'] = 8+3*np.sin(d['time']*0.2*np.pi) + 2*np.sin(d['time']*2*np.pi)

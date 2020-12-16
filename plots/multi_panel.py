@@ -198,9 +198,13 @@ def multi_panel_from_flat_data(
             
             # Plot line depending on style
             if (y_d['style'] == 'line'):
+                if 'field_color' in y_d:
+                    col = colors[y_d['field_color']]
+                else:
+                    col = colors[line_counter]
                 ax[i].plot(x, y,
                         linewidth = formatting['data_linewidth'],
-                        color=colors[line_counter],
+                        color=col,
                         clip_on=False)
                 line_counter +=1
                 if y_d['field_label']:
@@ -223,14 +227,18 @@ def multi_panel_from_flat_data(
                 x = np.concatenate((x_top, x_bot[-1:0:-1]))
                 xy = [x,y]
                 xy = np.array(np.array(xy).transpose())
+                if 'field_color' in y_d:
+                    col = colors[y_d['field_counter']]
+                else:
+                    col = colors[patch_counter]
                 polygon = pat.Polygon(xy, True, clip_on=False,
-                                      fc=colors[patch_counter],
+                                      fc=col,
                                       alpha=formatting['patch_alpha'])
                 ax[i].add_patch(polygon)
                 
                 if y_d['field_label']:
                     legend_symbols.append(
-                        Patch(facecolor=colors[patch_counter],
+                        Patch(facecolor=col,
                             alpha=formatting['patch_alpha']))
                     legend_strings.append(y_d['field_label'])
 

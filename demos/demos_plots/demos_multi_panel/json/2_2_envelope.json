@@ -2,13 +2,14 @@
     "layout":
     {
         "fig_width": 7,
-        "panel_height": 2,
+        "panel_height": 1.5,
         "top_margin": 0.5,
         "right_margin": 0.5
     },
     "formatting":
     {
-        "tick_fontsize": 10    
+        "tick_fontsize": 10,
+        "legend_fontsize": 8    
     },
     "x_display":
     {
@@ -107,6 +108,11 @@
                         "field": "fast_wave",
                         "style": "envelope",
                         "field_label": "Fast Envelope"
+                    },
+                    {
+                        "field": "slow_wave",
+                        "field_label": "Slow line",
+                        "field_color": 4
                     }
                 ]
             }

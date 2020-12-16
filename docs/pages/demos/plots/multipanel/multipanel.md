@@ -25,7 +25,10 @@ multi_panel_from_flat_data(
     output_image_file_string = 'image.png')
 ````
 
-The images below were generated from the same excel file by passing in the templates stored in `<repo>/demos/demos_plots/demos_multi_panel/json`.
+The images below were generated from a single excel file using the templates stored in `<repo>/demos/demos_plots/demos_multi_panel/json`.
+
+The top of the excel file looked like
+![excel_file](excel_screenshot.png)
 
 ## Example template
 

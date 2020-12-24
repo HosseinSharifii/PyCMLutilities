@@ -70,12 +70,12 @@
                     {
                         "field": "n_off",
                         "style": "envelope",
-                        "field_label": "N$_{off}$"
+                        "field_label": "N$\\mathregular{_{off}}$"
                     },
                     {
                         "field": "n_on",
                         "style": "envelope",
-                        "field_label": "N$_{on}$"
+                        "field_label": "N$\\mathregular{_{on}}$"
                     }
                 ]
             }

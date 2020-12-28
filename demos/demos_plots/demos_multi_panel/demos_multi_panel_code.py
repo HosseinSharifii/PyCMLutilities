@@ -11,6 +11,14 @@ import matplotlib.pyplot as plt
 from plots import multi_panel as mp
 
 def run_demos():
+    """
+    Calls pymyovent_example to run a demo plot
+
+    Returns
+    -------
+    None.
+
+    """
     
     # annotate_plot()
     
@@ -18,6 +26,14 @@ def run_demos():
     pymyovent_example()
     
 def pymyovent_example():
+    """
+    Runs a multi-panel plot from PyMyoVent data
+
+    Returns
+    -------
+    None.
+
+    """
     
     data_file_string = 'data/pymyovent_test.csv'
     template_file_string = 'json/pymyovent.json'
@@ -69,6 +85,14 @@ def single_run():
     plt.close(fig)    
         
 def annotate_plot():
+    """
+    Add annotations to a plot 
+
+    Returns
+    -------
+    None.
+
+    """
     
     data_file_string = 'data/test_data.xlsx'
     template_file_string = 'json/2_2.json'
@@ -105,6 +129,14 @@ def annotate_plot():
     plt.close(fig)
 
 def cycle_plots():
+    """
+    Plots a series of figures with differents .json structure files
+
+    Returns
+    -------
+    None.
+
+    """
     
     data_file_string = 'data/test_data.xlsx'
     image_dir = 'temp'

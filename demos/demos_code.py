@@ -14,6 +14,19 @@ from plots import pCa_plots as p
 # import PyCMLutilities.curve_fitting.curve_fitting as cf
 
 def demos(demo_group):
+    """
+    Parameters
+    ----------
+    demo_group : string
+        ken: runs a tension-pCa plot and adds a Hill curve fitting
+        plots_multi_panel: runs a multi-panel plot
+
+    Returns
+    -------
+    None.
+
+    """    
+    
     
     if (demo_group == 'ken'):
         pCa = np.array([9, 6, 5.5, 5, 4])

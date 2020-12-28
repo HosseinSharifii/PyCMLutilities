@@ -18,6 +18,15 @@ from matplotlib import patches as pat
 from matplotlib.patches import Patch
 
 def default_formatting():
+    """
+    Sets default formatting (fontname, axis linewidth, ...)
+
+    Returns
+    -------
+    formatting : dict
+        dictionnary containing the default formatting.
+
+    """
     formatting = dict()
     formatting['data_linewidth'] = 1.5
     formatting['fontname'] = 'Arial'
@@ -38,6 +47,15 @@ def default_formatting():
     return formatting
 
 def default_layout():
+    """
+    Sets default layout (figure size, margin size, grid space)
+
+    Returns
+    -------
+    layout : dict
+        dictionnary containing the default layout.
+
+    """
     layout = dict()
     layout['fig_width'] = 3.5
     layout['panel_height'] = 1
@@ -63,6 +81,32 @@ def multi_panel_from_flat_data(
         template_file_string=[],
         output_image_file_string = [],
         dpi = 300):
+    """
+    Plot a multi-panel figure
+
+    Parameters
+    ----------
+    data_file_string : str, optional
+        Path to the data file. The default is [].
+    excel_sheet : str, optional
+        Excel sheet where the data are stored. The default is 'Sheet1'.
+    pandas_data : DataFrame, optional
+        DataFrame containing the data. The default is [].
+    template_file_string : str, optional
+        Path to the .json structure file. The default is [].
+    output_image_file_string : str, optional
+        Path where the output plot is saved. The default is [].
+    dpi : int, optional
+        Image resolution. The default is 300.
+
+    Returns
+    -------
+    fig : figure
+        Handle to the produced pyplot figure.
+    ax : axes
+        Handle to an array of the pyplot axes.
+
+    """
     
     # Check for template file, make an empty dict if absent
     if (template_file_string):
@@ -361,6 +405,21 @@ def multi_panel_from_flat_data(
     return (fig,ax)
     
 def deduce_axis_limits(lim, mode_string=[]):
+    """
+    Sets the x limits
+
+    Parameters
+    ----------
+    lim : tuple
+        tuple containing the first and last x-value from the data.
+    mode_string : str, optional
+        If set to "close_fit", the x limits are the closest to the lim input. The default is [].
+
+    Returns
+    -------
+    Tuple containing the x limits
+
+    """
     
     # Start simply
     lim = np.asarray(lim)

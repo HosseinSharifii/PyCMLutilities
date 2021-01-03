@@ -35,7 +35,7 @@ def fit_pCa_data(x,y):
     return d
 
 def fit_hyperbola(x, y):
-    """" Fits hyperbola of form (x+a)(y+b) = b*(x_0+a) to y data """
+    """ Fits hyperbola of form (x+a)(y+b) = b*(x_0+a) to y data """
     
     def y_hyperbola(x_data, x_0, a, b):
         y = np.zeros(len(x_data))
@@ -56,7 +56,7 @@ def fit_hyperbola(x, y):
     return d
 
 def fit_power_curve(x, y):
-    """" Fits power curve of form y = x*b*(((x_0+a)/(x+a))-1) to y data """
+    """ Fits power curve of form y = x*b*(((x_0+a)/(x+a))-1) to y data """
     
     def y_power(x_data, x_0, a, b):
         y = np.zeros(len(x_data))
@@ -77,7 +77,7 @@ def fit_power_curve(x, y):
     return d
 
 def fit_exponential_recovery(x, y, n=1):
-    """ Fits exponential recovery """
+    """ Fits exponential recovery with a single exponential of form y = offset + amp*(1 - exp(-k*x)) to y data """
     
     if n==1:
         def y_single_exp(x_data, offset, amp, k):

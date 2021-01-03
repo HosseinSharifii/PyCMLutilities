@@ -8,7 +8,7 @@ Created on Wed Feb 12 17:20:25 2020
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 
-def y_pCa_plot(pCa, y, draw_fit=False, ax=[], sym='ro'):
+def y_pCa_plot(pCa, y, draw_fit=False, ax=[], sym='ro', output_image_file_string = []):
     """ Draws y-pCa plot with optional fit """
     
     # Make axes if requried
@@ -17,8 +17,6 @@ def y_pCa_plot(pCa, y, draw_fit=False, ax=[], sym='ro'):
         f.set_size_inches([3,3])
         spec = gridspec.GridSpec(nrows=1, ncols=1, figure=f)
         ax = f.add_subplot(spec[0,0])
-    
-    ax.plot(pCa, y, sym)
     
     if draw_fit:
         from curve_fitting.curve_fitting import fit_pCa_data
@@ -29,6 +27,8 @@ def y_pCa_plot(pCa, y, draw_fit=False, ax=[], sym='ro'):
                 label='pCa$_{50}$ = %.3f\nn$_H$ = %.2f' %
                     (fit_data['pCa_50'], fit_data['n_H']))
         
+    ax.plot(pCa, y, sym)
+        
     # Add labels
     ax.set_xlabel('pCa')
     ax.set_ylabel('Force')
@@ -36,3 +36,12 @@ def y_pCa_plot(pCa, y, draw_fit=False, ax=[], sym='ro'):
     
     # Flip axis
     ax.invert_xaxis()
+    
+    # Save if required
+    if output_image_file_string:
+        print('Saving figure to %s' % output_image_file_string)
+        plt.savefig(output_image_file_string, dpi=300)
+    
+    # Show figure in matplotlib window
+    plt.show()
+    

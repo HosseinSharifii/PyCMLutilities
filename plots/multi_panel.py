@@ -397,6 +397,9 @@ def multi_panel_from_flat_data(
 
     fig.align_labels()
     
+    # Show figure in matplotlib window
+    plt.show()
+    
     # Save if required
     if output_image_file_string:
         print('Saving figure to %s' % output_image_file_string)

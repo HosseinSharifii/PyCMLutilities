@@ -11,4 +11,4 @@ has_children: False
 
 An early stage repository with files that are useful for muscle analysis
 
-See [demos](demos/demos.md) to get started
+See [demos](pages/demos/demos.md) to get started

@@ -1,0 +1,18 @@
+{
+    "panels":
+    [
+        {
+            "column": 1,
+            "y_info":
+            {
+                "label": "Medium\nWave",
+                "series":
+                [
+                    {
+                        "field": "medium_wave"
+                    }
+                ]
+            }
+        }
+    ]
+}

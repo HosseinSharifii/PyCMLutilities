@@ -1,0 +1,123 @@
+{
+    "layout":
+    {
+        "fig_width": 7,
+        "panel_height": 1.5,
+        "top_margin": 0.5,
+        "right_margin": 0.5
+    },
+    "formatting":
+    {
+        "tick_fontsize": 10,
+        "legend_fontsize": 8,
+        "data_linewidth": 0.75,
+        "y_label_pad": 20  
+    },
+    "x_display":
+    {
+        "global_x_field": "time",
+        "label": "Time (s)"
+    },
+    "panels":
+    [
+        {
+            "column": 1,
+            "y_info":
+            {
+                "label": "Line",
+                "series":
+                [
+                    {
+                        "field": "wave_mix",
+                        "field_label": "Wave mix"
+                    }
+                ]
+            }
+        },
+        {
+            "column": 2,
+            "y_info":
+            {
+                "label": "Line\nand\nEnvelope",
+                "series":
+                [
+                    {
+                        "field": "wave_mix",
+                        "style": "envelope",
+                        "field_label": "Envelope"
+                    },
+                    {
+                        "field": "wave_mix",
+                        "field_label": "Line"
+                    }
+                ]
+            }
+        },
+        {
+            "column": 1,
+            "y_info":
+            {
+                "label": "Mixture",
+                "series":
+                [
+                    {
+                        "field": "wave_mix",
+                        "style": "envelope",
+                        "field_label": "Envelope"
+                    },
+                    {
+                        "field": "wave_mix",
+                        "field_label": "Line"
+                    },
+                    {
+                        "field": "medium_wave",
+                        "style": "envelope",
+                        "field_label": "Medium Env"
+                    },
+                    {
+                        "field": "medium_wave",
+                        "field_label": "Medium Line"
+                    }
+                ]
+            }
+        },
+        {
+            "column": 2,
+            "y_info":
+            {
+                "label": "Mixture",
+                "series":
+                [
+                    {
+                        "field": "wave_mix",
+                        "style": "envelope",
+                        "field_label": "Envelope"
+                    },
+                    {
+                        "field": "wave_mix",
+                        "field_label": "Line"
+                    },
+                    {
+                        "field": "medium_wave",
+                        "style": "envelope",
+                        "field_label": "Medium Env"
+                    },
+                    {
+                        "field": "medium_wave",
+                        "field_label": "Medium Line"
+                    },
+                    {
+                        "field": "fast_wave",
+                        "style": "envelope",
+                        "field_label": "Fast Envelope"
+                    },
+                    {
+                        "field": "slow_wave",
+                        "field_label": "Slow line",
+                        "field_color": 4
+                    }
+                ]
+            }
+        }
+    ]
+}

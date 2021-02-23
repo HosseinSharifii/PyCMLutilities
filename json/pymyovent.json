@@ -1,0 +1,231 @@
+{
+    "layout":
+    {
+        "fig_width": 7,
+        "panel_height": 1,
+        "top_margin": 1
+    },
+    "formatting":
+    {
+        "x_label_fontsize": 10,
+        "y_label_fontsize": 10,
+        "y_label_pad": 40
+    },
+    "x_display":
+    {
+        "global_x_field": "time",
+        "label": "Time (s)"
+    },
+    "annotations":
+    [
+        {
+            "panel": "all",
+            "type": "v_line",
+            "x_value": 10,
+            "linestyle": "--",
+            "linewidth": "1.5"
+        },
+        {
+            "panel": 2,
+            "type": "v_line",
+            "x_value": 20,
+            "linestyle": ":",
+            "color": "red",
+            "linewidth": "1.5"
+        },
+        {
+            "panel": 3,
+            "type": "h_line",
+            "y_value": 0.5,
+            "color": "#9696FF"
+        },
+        {
+            "panel": 0,
+            "type": "box",
+            "x_coord": 0,
+            "y_rel_coord": 1.1,
+            "width": 20,
+            "rel_height": 0.2
+        },
+        {
+            "panel": 3,
+            "type": "box",
+            "x_coord": 20,
+            "y_rel_coord": 1.1,
+            "face_color": "gray",
+            "width": 20,
+            "rel_height": 0.2
+        },
+        {
+            "panel": 0,
+            "type": "text",
+            "x_coord": 10,
+            "y_rel_coord": 1.1,
+            "label": "hello world",
+            "label_fontsize": 10,
+            "label_color": "pink"
+
+        }
+    ],
+    "panels":
+    [
+        {
+            "column": 1,
+            "y_info":
+            {
+                "label": "Time",
+                "series":
+                [
+                    {
+                        "field": "time"
+                    }
+                ]
+            }
+        },
+        {
+            "column": 1,
+            "y_info":
+            {
+                "label": "Ventricular\ncavity\nvolume\n(liters)",
+                "series":
+                [
+                    {
+                        "field": "volume_ventricle",
+                        "style": "envelope"
+                    }
+                ]
+            }
+        },
+        {
+            "column": 1,
+            "y_info":
+            {
+                "label": "Myofilament\n[$\\mathregular{Ca^{2+}}$]\n($\\mathregular{\\mu}$M)",
+                "series":
+                [
+                    {
+                        "field": "Ca_conc",
+                        "style": "envelope",
+                        "scaling_factor": 1e6
+                    }
+                ]
+            }
+        },
+        {
+            "column": 1,
+            "y_info":
+            {
+                "label": "Thin\nfilament",
+                "series":
+                [
+                    {
+                        "field": "n_off",
+                        "style": "envelope",
+                        "field_label": "N$\\mathregular{_{off}}$"
+                    },
+                    {
+                        "field": "n_on",
+                        "style": "envelope",
+                        "field_label": "N$\\mathregular{_{on}}$"
+                    }
+                ]
+            }
+        },
+        {
+            "column": 1,
+            "y_info":
+            {
+                "label": "Thick\nfilament",
+                "series":
+                [
+                    {
+                        "field": "M_OFF",
+                        "style": "envelope",
+                        "field_label": "M$_{OFF}$"
+                    },
+                    {
+                        "field": "M_ON",
+                        "style": "envelope",
+                        "field_label": "M$_{ON}$"
+                    },
+                    {
+                        "field": "M_bound",
+                        "style": "envelope",
+                        "field_label": "M$_{FG}$"
+                    }
+                ]
+            }
+        },
+        {
+            "column": 2,
+            "y_info":
+            {
+                "label": "P$\\mathregular{_{arteries}}$\n(mm Hg)",
+                "series":
+                [
+                    {
+                        "field": "pressure_arteries",
+                        "style": "envelope"
+                    }
+                ]
+            }
+        },
+        {
+            "column": 2,
+            "y_info":
+            {
+                "label": "k$\\mathregular{_1}$\n(s$\\mathregular{^{-1}}$)",
+                "ticks": [0, 3],
+                "series":
+                [
+                    {
+                        "field": "k_1"
+                    }
+                ]
+            }
+        },
+        {
+            "column": 2,
+            "y_info":
+            {
+                "label": "P$\\mathregular{_{arteries}}$\n(mm Hg)",
+                "series":
+                [
+                    {
+                        "field": "pressure_arteries",
+                        "style": "envelope"
+                    }
+                ]
+            }
+        },
+        {
+            "column": 2,
+            "y_info":
+            {
+                "label": "P$\\mathregular{_{arteries}}$\n(mm Hg)",
+                "series":
+                [
+                    {
+                        "field": "pressure_arteries",
+                        "style": "envelope"
+                    }
+                ]
+            }
+        },
+        {
+            "column": 2,
+            "y_info":
+            {
+                "label": "Thick\nfilament",
+                "series":
+                [
+                    {
+                        "field": "M_bound",
+                        "style": "envelope",
+                        "field_label": "M$_{FG}$"
+                    }
+                ]
+            }
+        }
+    ]
+}

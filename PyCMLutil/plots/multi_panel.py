@@ -16,6 +16,8 @@ import matplotlib.gridspec as gridspec
 from matplotlib.lines import Line2D
 from matplotlib import patches as pat
 from matplotlib.patches import Patch
+from matplotlib.patches import Rectangle
+
 
 def default_formatting():
     """
@@ -135,7 +137,7 @@ def multi_panel_from_flat_data(
                                         sheet_name=excel_sheet)
         if file_type == 'csv':
             pandas_data = pd.read_csv(data_file_string)
-        
+
     # Try to work out x data
     if 'x_display' in template_data:
         x_display = template_data['x_display']
@@ -384,7 +386,7 @@ def multi_panel_from_flat_data(
                                'size': formatting['legend_fontsize']},
                          ncol = int(np.ceil(len(legend_symbols)/
                                             formatting['max_rows_per_legend'])))
-
+        handle_annotations(template_data, ax[i], i, formatting)
     # Tidy overall figure
     # Move plots inside margins
     lhs = layout['left_margin']/layout['fig_width']
@@ -402,6 +404,86 @@ def multi_panel_from_flat_data(
         fig.savefig(output_image_file_string, dpi=dpi)
 
     return (fig,ax)
+
+
+def handle_annotations(template_data, ax, panel_index, formatting):
+    if not ('annotations' in template_data):
+        return
+    annotation_data = template_data['annotations']
+    for an in annotation_data:
+        if ((an['panel'] == 'all') or (an['panel'] == panel_index)):
+            # check for vertical lines
+            if (an['type'] == 'v_line'):
+                # define default formats for v_line,
+                # if they are not alrady defined
+                if not('linestyle' in an):
+                    an['linestyle'] = '--'
+                if not('linewidth' in an):
+                    an['linewidth'] = formatting['data_linewidth']
+                if not('color' in an):
+                    an['color'] = 'black'
+                # now draw the v_line
+                ax.axvline(x = an['x_value'],
+                            linestyle = an['linestyle'],
+                            linewidth = an['linewidth'],
+                            color = an['color'])
+
+            # check for horizontal lines
+            elif (an['type'] == 'h_line'):
+                # define default formats for v_line,
+                # if they are not alrady defined
+                if not('linestyle' in an):
+                    an['linestyle'] = '--'
+                if not('linewidth' in an):
+                    an['linewidth'] = formatting['data_linewidth']
+                if not('color' in an):
+                    an['color'] = 'black'
+                # now draw the v_line
+                ax.axhline(y = an['y_value'],
+                            linestyle = an['linestyle'],
+                            linewidth = an['linewidth'],
+                            color = an['color'])
+
+            elif (an['type'] == 'box'):
+                # drawing box
+                x_start = an['x_coord']
+                y_lim = ax.get_ylim()
+                y_start = (y_lim[1]-y_lim[0]) * an['y_rel_coord']
+                h_box = (y_lim[1]-y_lim[0]) * an['rel_height']
+                xy_start = [x_start,y_start]
+                if not('linestyle' in an):
+                    an['linestyle'] = '-'
+                if not('linewidth' in an):
+                    an['linewidth'] = formatting['data_linewidth']
+                if not('face_color' in an):
+                    an['face_color'] = 'none'
+                if not('edge_color' in an):
+                    an['edge_color'] = 'black'
+                box = Rectangle(xy = xy_start,
+                            width = an['width'],
+                            height = h_box,
+                            facecolor = an['face_color'],
+                            edgecolor = an['edge_color'],
+                            linestyle = an['linestyle'],
+                            linewidth = an['linewidth'],
+                            clip_on = False)
+                ax.add_patch(box)
+
+            elif (an['type'] == 'text'):
+                # writing text
+                y_lim = ax.get_ylim()
+                if not('label_fontsize' in an):
+                    an['label_fontsize'] = formatting['y_label_fontsize']
+                if not('label_color' in an):
+                    an['label_color'] = 'black'
+                ax.text(x = an['x_coord'],
+                        y = (y_lim[1]-y_lim[0]) * an['y_rel_coord'],
+                        s = an['label'],
+                        fontsize = an['label_fontsize'],
+                        fontfamily = formatting['fontname'],
+                        horizontalalignment='center',
+                        verticalalignment='center',
+                        color = an['label_color'])
 
 def deduce_axis_limits(lim, mode_string=[]):
     """

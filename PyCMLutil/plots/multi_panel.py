@@ -74,7 +74,7 @@ def default_layout():
 
 def default_processing():
     processing = dict()
-    processing['envelope_peak_prominence'] = 0.2
+    processing['envelope_n'] = 300
 
     return processing
 
@@ -282,38 +282,35 @@ def multi_panel_from_flat_data(
                 if y_d['field_label']:
                     legend_symbols.append(
                         Line2D([0], [0],
-                               color=ax[i].lines[-1].get_color(),
-                               lw=formatting['data_linewidth']))
+                               color = ax[i].lines[-1].get_color(),
+                               lw = formatting['data_linewidth']))
                     legend_strings.append(y_d['field_label'])
 
             if (y_d['style'] == 'envelope'):
-                # y_top = pd.Series(y).rolling(nn, min_periods=1).max().to_numpy()
-                # y_bottom = pd.Series(y).rolling(nn, min_periods=1).min().to_numpy()
-                top_ind,_ = find_peaks(y, prominence =
-                                       processing['envelope_peak_prominence']*np.amax(y))
-                x_top = x[top_ind]
-                y_top = y[top_ind]
-                bot_ind,_ = find_peaks(-y, prominence =
-                                       processing['envelope_peak_prominence']*np.amax(-y))
-                x_bot = x[bot_ind]
-                y_bot = y[bot_ind]
-                y = np.concatenate((y_top, y_bot[-1:0:-1]))
-                x = np.concatenate((x_top, x_bot[-1:0:-1]))
-                xy = [x,y]
-                xy = np.array(np.array(xy).transpose())
+                # Hold the maximum and minimum values
+                y_top = pd.Series(y).rolling(processing['envelope_n'],
+                                             min_periods=1).max().to_numpy()
+                y_bot = pd.Series(y).rolling(processing['envelope_n'],
+                                             min_periods=1).min().to_numpy()
+                yp = np.hstack((y_top, y_bot[::-1], y_top[0]))
+                xp = np.hstack((x, x[::-1], x[0]))
+                xy = np.vstack((xp,yp))
+                xy = np.array(np.array(xy).transpose());
                 if 'field_color' in y_d:
                     col = y_d['field_color']
                 else:
                     col = colors[patch_counter]
-                polygon = pat.Polygon(xy, True, clip_on=False,
-                                      fc=col,
-                                      alpha=formatting['patch_alpha'])
+                polygon = pat.Polygon(xy = xy,
+                                      closed = True,
+                                      clip_on = False,
+                                      fc = col,
+                                      alpha = formatting['patch_alpha'])
                 ax[i].add_patch(polygon)
 
                 if y_d['field_label']:
                     legend_symbols.append(
-                        Patch(facecolor=col,
-                            alpha=formatting['patch_alpha']))
+                            Patch(facecolor = col,
+                                  alpha =formatting['patch_alpha']))
                     legend_strings.append(y_d['field_label'])
 
                 patch_counter = patch_counter+1
@@ -378,8 +375,8 @@ def multi_panel_from_flat_data(
 
         # Add legend if it exists
         if legend_symbols:
-            ax[i].legend(legend_symbols, legend_strings,
-                         loc=formatting['legend_location'],
+            leg = ax[i].legend(legend_symbols, legend_strings,
+                         loc = formatting['legend_location'],
                          handlelength = formatting['legend_handlelength'],
                          bbox_to_anchor=(formatting['legend_bbox_to_anchor'][0],
                                          formatting['legend_bbox_to_anchor'][1]),
@@ -387,6 +384,8 @@ def multi_panel_from_flat_data(
                                'size': formatting['legend_fontsize']},
                          ncol = int(np.ceil(len(legend_symbols)/
                                             formatting['max_rows_per_legend'])))
+            leg.get_frame().set_linewidth(formatting['axis_linewidth'])
+            leg.get_frame().set_edgecolor("black")
         handle_annotations(template_data, ax[i], i, formatting)
     # Tidy overall figure
     # Move plots inside margins

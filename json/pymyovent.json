@@ -3,13 +3,15 @@
     {
         "fig_width": 7,
         "panel_height": 1,
-        "top_margin": 1
+        "top_margin": 0.1
     },
     "formatting":
     {
         "x_label_fontsize": 10,
         "y_label_fontsize": 10,
         "y_label_pad": 40,
+        "legend_fontsize": 8,
+        "legend_bbox_to_anchor": [1.05,1.05],
         "patch_alpha": 0.5,
         "color_theme_category": "muted"
     },
@@ -35,45 +37,21 @@
             "linewidth": "1.5"
         },
         {
-            "panel": 2,
-            "type": "v_line",
-            "x_value": 20,
-            "linestyle": ":",
-            "color": "red",
-            "linewidth": "1.5"
-        },
-        {
-            "panel": 3,
-            "type": "h_line",
-            "y_value": 0.5,
-            "color": "#9696FF"
-        },
-        {
             "panel": 0,
             "type": "box",
             "x_coord": 0,
             "y_rel_coord": 1.1,
             "width": 20,
-            "rel_height": 0.2
+            "rel_height": 0.4
         },
         {
-            "panel": 3,
+            "panel": 0,
             "type": "box",
             "x_coord": 20,
             "y_rel_coord": 1.1,
             "face_color": "gray",
             "width": 20,
-            "rel_height": 0.2
-        },
-        {
-            "panel": 0,
-            "type": "text",
-            "x_coord": 10,
-            "y_rel_coord": 1.1,
-            "label": "hello world",
-            "label_fontsize": 10,
-            "label_color": "pink"
-
+            "rel_height": 0.4
         }
     ],
     "panels":
@@ -100,8 +78,7 @@
                 [
                     {
                         "field": "volume_ventricle",
-                        "style": "envelope",
-                        "field_color": "#9696FF"
+                        "style": "envelope"
                     }
                 ]
             }

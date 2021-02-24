@@ -276,8 +276,8 @@ def multi_panel_from_flat_data(
                     col = colors[line_counter]
                 ax[i].plot(x, y,
                         linewidth = formatting['data_linewidth'],
-                        color=col,
-                        clip_on=True)
+                        color = col,
+                        clip_on = True)
                 line_counter +=1
                 if y_d['field_label']:
                     legend_symbols.append(
@@ -302,7 +302,7 @@ def multi_panel_from_flat_data(
                     col = colors[patch_counter]
                 polygon = pat.Polygon(xy = xy,
                                       closed = True,
-                                      clip_on = False,
+                                      clip_on = True,
                                       fc = col,
                                       alpha = formatting['patch_alpha'])
                 ax[i].add_patch(polygon)
@@ -448,7 +448,8 @@ def handle_annotations(template_data, ax, panel_index, formatting):
                 # drawing box
                 x_start = an['x_coord']
                 y_lim = ax.get_ylim()
-                y_start = (y_lim[1]-y_lim[0]) * an['y_rel_coord']
+                y_start = y_lim[0] + \
+                        (y_lim[1]-y_lim[0]) * an['y_rel_coord']
                 h_box = (y_lim[1]-y_lim[0]) * an['rel_height']
                 xy_start = [x_start,y_start]
                 if not('linestyle' in an):

@@ -18,7 +18,8 @@
     "x_display":
     {
         "global_x_field": "time",
-        "label": "Time (s)"
+        "label": "Time (s)",
+        "global_x_ticks": [10,30]
     },
     "annotations":
     [
@@ -46,6 +47,23 @@
         },
         {
             "panel": 0,
+            "type": "box",
+            "x_coord": 20,
+            "y_rel_coord": 1.1,
+            "face_color": "gray",
+            "width": 20,
+            "rel_height": 0.4
+        },
+        {
+            "panel": 5,
+            "type": "box",
+            "x_coord": 0,
+            "y_rel_coord": 1.1,
+            "width": 20,
+            "rel_height": 0.4
+        },
+        {
+            "panel": 5,
             "type": "box",
             "x_coord": 20,
             "y_rel_coord": 1.1,
@@ -154,7 +172,8 @@
                         "field": "pressure_arteries",
                         "style": "envelope"
                     }
-                ]
+                ],
+                "ticks": [50,120]
             }
         },
         {

@@ -9,7 +9,9 @@
     {
         "x_label_fontsize": 10,
         "y_label_fontsize": 10,
-        "y_label_pad": 40
+        "y_label_pad": 40,
+        "patch_alpha": 0.5,
+        "color_theme_category": "muted"
     },
     "x_display":
     {
@@ -21,7 +23,14 @@
         {
             "panel": "all",
             "type": "v_line",
-            "x_value": 10,
+            "x_value": 30,
+            "linestyle": "--",
+            "linewidth": "1.5"
+        },
+        {
+            "panel": "all",
+            "type": "v_line",
+            "x_value": 40,
             "linestyle": "--",
             "linewidth": "1.5"
         },
@@ -91,7 +100,8 @@
                 [
                     {
                         "field": "volume_ventricle",
-                        "style": "envelope"
+                        "style": "envelope",
+                        "field_color": "#9696FF"
                     }
                 ]
             }

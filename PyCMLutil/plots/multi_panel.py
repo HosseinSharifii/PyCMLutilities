@@ -17,6 +17,7 @@ from matplotlib.lines import Line2D
 from matplotlib import patches as pat
 from matplotlib.patches import Patch
 from matplotlib.patches import Rectangle
+import seaborn as sns
 
 
 def default_formatting():
@@ -45,6 +46,7 @@ def default_formatting():
     formatting['tick_fontsize'] = 11
     formatting['patch_alpha'] = 0.3
     formatting['max_rows_per_legend'] = 4
+    formatting['color_theme_category'] = None
 
     return formatting
 
@@ -223,8 +225,7 @@ def multi_panel_from_flat_data(
         legend_strings = []
 
         # Set up your colors
-        prop_cycle = plt.rcParams['axes.prop_cycle']
-        colors = prop_cycle.by_key()['color']
+        colors = sns.color_palette(formatting['color_theme_category'])
         line_counter = 0
         patch_counter = 0
 
@@ -270,7 +271,7 @@ def multi_panel_from_flat_data(
             # Plot line depending on style
             if (y_d['style'] == 'line'):
                 if 'field_color' in y_d:
-                    col = colors[y_d['field_color']]
+                    col = y_d['field_color']
                 else:
                     col = colors[line_counter]
                 ax[i].plot(x, y,
@@ -301,7 +302,7 @@ def multi_panel_from_flat_data(
                 xy = [x,y]
                 xy = np.array(np.array(xy).transpose())
                 if 'field_color' in y_d:
-                    col = colors[y_d['field_counter']]
+                    col = y_d['field_color']
                 else:
                     col = colors[patch_counter]
                 polygon = pat.Polygon(xy, True, clip_on=False,

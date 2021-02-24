@@ -478,7 +478,7 @@ def handle_annotations(template_data, ax, panel_index, formatting):
                 if not('label_color' in an):
                     an['label_color'] = 'black'
                 ax.text(x = an['x_coord'],
-                        y = (y_lim[1]-y_lim[0]) * an['y_rel_coord'],
+                        y = y_lim[0] + (y_lim[1]-y_lim[0]) * an['y_rel_coord'],
                         s = an['label'],
                         fontsize = an['label_fontsize'],
                         fontfamily = formatting['fontname'],

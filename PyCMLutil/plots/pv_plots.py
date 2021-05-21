@@ -97,7 +97,7 @@ def display_pv_loop(
         output_image_file_string = [],
         dpi = 300):
     """
-    Plot a multi-panel figure
+    Plot a pressure-volume loop
 
     Parameters
     ----------
@@ -110,8 +110,25 @@ def display_pv_loop(
     time_frames: Array of tuples, [(),(),..,()]
     template_file_string : str, optional
         Path to the .json structure file. The default is [].
+    template_data : Dictionary , optional
+        It contains the formatting and layout variables
+    pressure_var_nam: str, required
+        Variable name for "Pressure" in the data frame
+    volume_var_name: str, required
+        Variable name for "Volume" in the data frame
+    time_var_name : str, optional
+        Variable name for "Time" in the data frame
+     legend_labels: array of str, optional
     output_image_file_string : str, optional
         Path where the output plot is saved. The default is [].
+    x_tick: str, optional
+        Assigned mode for calculating ticks for X axis
+    y_tick: str, optional
+        Assigned mode for calculating ticks for Y axis
+    x_label: str, optional
+        X axis label
+    y_label: str, optional
+        Y axis label
     dpi : int, optional
         Image resolution. The default is 300.
 

@@ -8,6 +8,7 @@ Created on Thu Mar 11 10:33:36 2021
 import json
 import pandas as pd
 import numpy as np
+import math
 
 from scipy.signal import find_peaks
 
@@ -46,7 +47,8 @@ def default_formatting():
     formatting['tick_fontsize'] = 11
     formatting['patch_alpha'] = 0.3
     formatting['max_rows_per_legend'] = 4
-    formatting['color_theme_category'] = None
+    formatting['color_theme_category'] = 'Set2'
+    formatting['palette_list'] = ['pastel','Set2','flare','deep']
     formatting['color_saturation'] = 1
     formatting['box_width'] = 0.75
     formatting['dodge'] = True
@@ -59,6 +61,44 @@ def default_formatting():
     formatting['join'] = True
 
     return formatting
+def default_strip_formatting():
+    """
+    Sets default formatting for strip plot (marker_type, marker_size, jitter, ...)
+
+    Returns
+    -------
+    strip_formatting : dict
+        dictionnary containing the default formatting for strip plot.
+
+    """
+    strip_formatting = dict()
+    strip_formatting['marker_list'] = ['o','^','s','x','*']
+    strip_formatting['jitter'] = True
+    strip_formatting['dodge'] = True
+    strip_formatting['marker_ec'] = None
+    strip_formatting['marker_elw'] = 0.5
+    strip_formatting['marker_size'] = 8
+
+    return strip_formatting
+
+def default_box_formatting():
+    """
+    Sets default formatting for box plot (marker_type, marker_size, jitter, ...)
+
+    Returns
+    -------
+    box_formatting : dict
+        dictionnary containing the default formatting for strip plot.
+
+    """
+    box_formatting = dict()
+    box_formatting['color_saturation'] = 1
+    box_formatting['box_width'] = 0.75
+    box_formatting['dodge'] = True
+    box_formatting['linewidth'] = 1
+
+
+    return box_formatting
 
 def default_layout():
     """
@@ -94,7 +134,6 @@ def multi_panel_cat_from_flat_data(
         pandas_data = [],
         template_file_string=[],
         output_image_file_string = [],
-        predef={},
         dpi = 300):
     """
     Plot a multi-panel figure
@@ -135,6 +174,17 @@ def multi_panel_cat_from_flat_data(
     if ('formatting' in template_data):
         for entry in template_data['formatting']:
             formatting[entry] = template_data['formatting'][entry]
+    # Pull default formatting for strip plot, then overwite any values from the template
+    strip_formatting = default_strip_formatting()
+    if ('strip_formatting' in template_data):
+        for entry in template_data['strip_formatting']:
+            strip_formatting[entry] = template_data['strip_formatting'][entry]
+
+      # Pull default formatting for box plot, then overwite any values from the template
+    box_formatting = default_box_formatting()
+    if ('box_formatting' in template_data):
+        for entry in template_data['box_formatting']:
+            box_formatting[entry] = template_data['box_formatting'][entry]
 
     # Pull default processing
     processing = default_processing()
@@ -175,6 +225,15 @@ def multi_panel_cat_from_flat_data(
     if 'order' not in x_display:
         x_display['order'] = \
             pandas_data[x_display['global_x_field']].unique()
+    # setup hue 
+
+    if 'global_hue' not in x_display:
+        x_display['global_hue'] = None
+        x_display['global_hue_order'] = None
+    else:
+        if 'global_hue_order' not in x_display: 
+            x_display['global_hue_order'] = \
+                pandas_data[x_display['global_hue']].unique()
 
     ####
     # Try to pull off the panel data and cycle through the panels one by one to
@@ -197,12 +256,8 @@ def multi_panel_cat_from_flat_data(
         panel_data = [panel_data]
     ####
 
-    if not predef:
-        no_of_columns = 0
-    else:
-        no_of_columns = predef['no_of_columns']
 
-
+    no_of_columns = 0
     for p_data in panel_data:
         test_column = p_data['column']
         if (test_column > no_of_columns):
@@ -216,9 +271,6 @@ def multi_panel_cat_from_flat_data(
         row_counters[p_data['column']-1] += 1
     rows_per_column = row_counters
     ax=[]
-    if predef:
-        for i,r in enumerate(predef['rows_per_column']):
-            rows_per_column[i] = r
     no_of_rows = np.amax(row_counters)
 
 
@@ -234,8 +286,7 @@ def multi_panel_cat_from_flat_data(
 
     # Now create figure
     fig = plt.figure(constrained_layout=False)
-    #if predef:
-    #    fig = predef['figure']
+
     fig.set_size_inches([layout['fig_width'], fig_height])
     spec = gridspec.GridSpec(nrows=no_of_rows,
                              ncols=no_of_columns,
@@ -253,9 +304,21 @@ def multi_panel_cat_from_flat_data(
         c = p_data['column']-1
         r = row_counters[c]-1
         ax.append(fig.add_subplot(spec[r,c]))
-        print('normal ax',ax[-1].get_position())
-        #if predef:
-        #    fig.axes.append(predef['ax'][0])
+
+        # setup x axis
+        if 'x_field' not in p_data:
+            p_data['x_field'] = x_display['global_x_field']
+            p_data['x_order'] = x_display['order']
+        # setup hue
+        if 'hue' not in p_data:
+            #check global field
+            p_data['hue'] = x_display['global_hue']
+            p_data['hue_order'] = x_display['global_hue_order']
+        else:
+            if 'hue_order' not in p_data:
+                p_data['hue_order'] = \
+                    pandas_data[p_data['hue']].unique()
+
         legend_symbols = []
         legend_strings = []
 
@@ -267,24 +330,29 @@ def multi_panel_cat_from_flat_data(
 
         # Cycle through the y_data
         for j,y_d in enumerate(p_data['y_info']['series']):
-            # Set the plot style to scatter if it is missing
+            # Set the plot style to strip if it is missing
             if 'style' not in y_d:
-                y_d['style'] = 'scatter'
+                y_d['style'] = 'strip'
             # Fill in a blank label if it is missing
             if 'field_label' not in y_d:
                 y_d['field_label'] = []
 
-            # Pull off the data
-            if 'x_field' not in p_data:
-                p_data['x_field'] = x_display['global_x_field']
+            # setup marker
+            if 'marker' not in y_d:
+                y_d['marker'] = strip_formatting['marker_list'][j]
+            # setup palette
+            if 'field_palette' not in y_d:
+                y_d['field_palette'] = formatting['palette_list'][j]
+            print(y_d['field_palette'], f'panel {i}',f'for y_data {j}')
 
-            if 'hue' not in p_data:
-                hue = None
-            else:
-                hue = pandas_data[p_data['hue']]
 
             x = pandas_data[p_data['x_field']]
             y = pandas_data[y_d['field']]
+            if p_data['hue'] == None:
+                hue = None
+            else: 
+                hue = pandas_data[p_data['hue']]
+            
 
             if 'scaling_factor' in y_d:
                 y = y * y_d['scaling_factor']
@@ -305,39 +373,81 @@ def multi_panel_cat_from_flat_data(
 
 
             # plot striplot depending on setyle
-            if y_d['style'] == 'scatter':
-                if 'field_color' in y_d:
-                    col = y_d['field_color']
-                else:
-                    col = colors[data_counter]
+            if y_d['style'] == 'strip':
                 sns.stripplot(x = x, y = y, hue = hue,
-                            ax = ax[i],
-                            marker = formatting['scatter_marker'],
-                            jitter = formatting['jitter_bool'],
-                            dodge = formatting['dodge'],
-                            palette = formatting['color_theme_category'],
-                            edgecolor = formatting['scatter_edgecolor'],
-                            linewidth = formatting['scatter_edge_linewidth'],
-                            size = formatting['markers_size'],
-                            clip_on = False)
+                                ax = ax[i],
+                                marker = y_d['marker'],
+                                jitter = strip_formatting['jitter'],
+                                dodge = strip_formatting['dodge'],
+                                palette = y_d['field_palette'],
+                                edgecolor = strip_formatting['marker_ec'],
+                                linewidth = strip_formatting['marker_elw'],
+                                size = strip_formatting['marker_size'],
+                                order = p_data['x_order'],
+                                hue_order = p_data['hue_order'],
+                                clip_on = False)
 
+
+                # handle legend 
+                if hue is not None:
+                    for k,h in enumerate(p_data['hue_order']):
+                        print(k)
+                        legend_symbols.append(Line2D([],[],
+                                                color = sns.color_palette(palette =y_d['field_palette'])[k],
+                                                marker = y_d['marker'],
+                                                markersize = strip_formatting['marker_size'],
+                                                linestyle = 'None'))
+                        field_label = ''
+                        if y_d['field_label']:
+                            field_label  = f'({y_d["field_label"]})'
+                        
+                        str = f'{h} {field_label}'
+                        legend_strings.append(str)
+
+                else:
+                    if y_d['field_label']:
+                        for l,o in enumerate(p_data['x_order']):
+                            legend_symbols.append(Line2D([],[],
+                                                color = sns.color_palette(palette =y_d['field_palette'])[l],
+                                                marker = y_d['marker'],
+                                                markersize = strip_formatting['marker_size'],
+                                                linestyle = 'None'))
+                            legend_strings.append(y_d["field_label"])
 
             if y_d['style'] == 'box':
                 sns.boxplot(x = x, y = y, hue=hue,
                             ax = ax[i],
-                            saturation = formatting['color_saturation'],
-                            width = formatting['box_width'],
-                            dodge = formatting['dodge'],
-                            linewidth = formatting['data_linewidth'],
-                            palette = formatting['color_theme_category'])
+                            saturation = box_formatting['color_saturation'],
+                            width = box_formatting['box_width'],
+                            dodge = box_formatting['dodge'],
+                            linewidth = box_formatting['linewidth'],
+                            palette = y_d['field_palette'])
 
+            # handle legend 
+                if hue is not None:
+                    for k,h in enumerate(p_data['hue_order']):
+                        print(k)
+                        legend_symbols.append(Patch(facecolor=sns.color_palette(palette =y_d['field_palette'])[k],
+                                                    alpha=box_formatting['color_saturation']))
+                        field_label = ''
+                        if y_d['field_label']:
+                            field_label  = f'({y_d["field_label"]})'
+                        
+                        str = f'{h} {field_label}'
+                        legend_strings.append(str)
 
+                else:
+                    if y_d['field_label']:
+                        for l,o in enumerate(p_data['x_order']):
+                            legend_symbols.append(Patch(facecolor=sns.color_palette(palette =y_d['field_palette'])[l],
+                                                    alpha=box_formatting['color_saturation']))
+                            legend_strings.append(y_d["field_label"])
 
             if y_d['style'] == 'point':
                 sns.pointplot(x = x, y = y, hue=hue,
-                            ax = ax[i],
-                            join = formatting['join'],
-                            palette = formatting['color_theme_category'])
+                                ax = ax[i],
+                                join = formatting['join'],
+                                palette = formatting['color_theme_category'])
             # Plot line depending on style
             if (y_d['style'] == 'line'):
                 if 'field_color' in y_d:
@@ -387,24 +497,12 @@ def multi_panel_cat_from_flat_data(
 
         # Tidy up axes and legends
 
-        # Set x limits
-        """xlim = (min_x, max_x)
-        if x_ticks_defined==False:
-            xlim = deduce_axis_limits(xlim,'autoscaled')
-        ax[i].set_xlim(xlim)
-        ax[i].set_xticks(x_display['global_x_ticks'])"""
-
         # Set y limits
-
+        min_y = math.floor(min_y)
+        max_y = math.ceil(max_y)
         ylim=([min_y, max_y])
         if ('ticks' in p_data['y_info']):
             ylim=tuple(p_data['y_info']['ticks'])
-        """else:
-            ylim=(min_y, max_y)
-            scaling_type = []
-            if ('scaling_type' in p_data['y_info']):
-                scaling_type = p_data['y_info']['scaling_type']
-            ylim = deduce_axis_limits(ylim, mode_string=scaling_type)"""
 
         ax[i].set_ylim(ylim)
         ax[i].set_yticks(ylim)
@@ -461,15 +559,6 @@ def multi_panel_cat_from_flat_data(
             leg.get_frame().set_edgecolor("black")
         handle_annotations(template_data, ax[i], i, formatting)
 
-    if predef:
-        #old_fig = predef['ax']
-        r_counter = 0
-        for c in range(predef['no_of_columns']):
-            for r in range(predef['rows_per_column'][c]):
-                print(r,c)
-                a = predef['ax'][r_counter]
-                transfer_ax(a,fig,spec = spec[r,c])
-                r_counter +=1
     # Tidy overall figure
     # Move plots inside margins
     lhs = layout['left_margin']/layout['fig_width']
@@ -481,18 +570,12 @@ def multi_panel_cat_from_flat_data(
 
     fig.align_labels()
 
-    output_dict = dict()
-    output_dict['figure']=fig
-    output_dict['gridspec'] = spec
-    output_dict['ax'] = ax
-    output_dict['rows_per_column'] = rows_per_column
-    output_dict['no_of_columns'] = no_of_columns
     # Save if required
     if output_image_file_string:
         print('Saving figure to %s' % output_image_file_string)
         fig.savefig(output_image_file_string, dpi=dpi)
 
-    return output_dict
+    return ax, fig
 
 
 def handle_annotations(template_data, ax, panel_index, formatting):

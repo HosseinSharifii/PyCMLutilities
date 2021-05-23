@@ -8,10 +8,11 @@ Created on Thu Mar 11 10:33:36 2021
 import json
 import pandas as pd
 import numpy as np
-import math
+import os
+
 
 from scipy.signal import find_peaks
-
+from numpy import mean
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from matplotlib.lines import Line2D
@@ -48,15 +49,9 @@ def default_formatting():
     formatting['patch_alpha'] = 0.3
     formatting['max_rows_per_legend'] = 4
     formatting['color_theme_category'] = 'Set2'
-    formatting['palette_list'] = ['pastel','Set2','flare','deep']
-    formatting['color_saturation'] = 1
-    formatting['box_width'] = 0.75
+    formatting['palette_list'] = ['pastel','Dark2_r','Set2','flare','deep']
     formatting['dodge'] = True
-    formatting['jitter_bool'] = True
-    formatting['scatter_marker'] = '.'
-    formatting['markers_size'] = 8
-    formatting['scatter_edgecolor'] = None
-    formatting['scatter_edge_linewidth'] = 0.5
+    
     # pointplot
     formatting['join'] = True
 
@@ -83,12 +78,12 @@ def default_strip_formatting():
 
 def default_box_formatting():
     """
-    Sets default formatting for box plot (marker_type, marker_size, jitter, ...)
+    Sets default formatting for box plot (saturtion, box_width, linewidth, ...)
 
     Returns
     -------
     box_formatting : dict
-        dictionnary containing the default formatting for strip plot.
+        dictionnary containing the default formatting for box plot.
 
     """
     box_formatting = dict()
@@ -99,6 +94,28 @@ def default_box_formatting():
 
 
     return box_formatting
+
+def default_point_formatting():
+    """
+    Sets default formatting for point plot (marker_type, marker_size, jitter, ...)
+
+    Returns
+    -------
+    box_formatting : dict
+        dictionnary containing the default formatting for point plot.
+
+    """
+    point_formatting = dict()
+    point_formatting['confidence_int'] = 95
+    point_formatting['estimator'] = np.mean
+    point_formatting['linestyle'] = '-'
+    point_formatting['dodge'] = True
+    point_formatting['join'] = True
+    point_formatting['errwidth'] = None
+    point_formatting['capsize'] = None
+
+
+    return point_formatting
 
 def default_layout():
     """
@@ -121,12 +138,6 @@ def default_layout():
     layout['grid_hspace'] = 0.1
 
     return layout
-
-def default_processing():
-    processing = dict()
-    processing['envelope_n'] = 300
-
-    return processing
 
 def multi_panel_cat_from_flat_data(
         data_file_string = [],
@@ -180,17 +191,17 @@ def multi_panel_cat_from_flat_data(
         for entry in template_data['strip_formatting']:
             strip_formatting[entry] = template_data['strip_formatting'][entry]
 
-      # Pull default formatting for box plot, then overwite any values from the template
+    # Pull default formatting for box plot, then overwite any values from the template
     box_formatting = default_box_formatting()
     if ('box_formatting' in template_data):
         for entry in template_data['box_formatting']:
             box_formatting[entry] = template_data['box_formatting'][entry]
 
-    # Pull default processing
-    processing = default_processing()
-    if 'processing' in template_data:
-        for entry in template_data['processing']:
-            processing[entry] = template_data['processing'][entry]
+    # Pull default formatting for point plot, then overwite any values from the template
+    point_formatting = default_point_formatting()
+    if ('point_formatting' in template_data):
+        for entry in template_data['point_formatting']:
+            point_formatting[entry] = template_data['point_formatting'][entry]
 
     # Read in the data
     if (not data_file_string==[]):
@@ -211,7 +222,10 @@ def multi_panel_cat_from_flat_data(
     """ Need to think a bit more how to deal with missing fields for categorical data"""
     ####
     if 'global_x_field' not in x_display:
-        x_display['global_x_field'] = pandas_data.columns[0]
+        #x_display['global_x_field'] = pandas_data.columns[0]
+        cat_sub_list = pandas_data.select_dtypes(include=['object']).columns.tolist()
+        x_display['global_x_field'] = pandas_data[cat_sub_list[0]]
+        print(cat_sub_list)
     """if 'global_x_ticks' not in x_display:
         x_lim = (pandas_data[x_display['global_x_field']].iloc[0],
                  pandas_data[x_display['global_x_field']].iloc[-1])
@@ -322,12 +336,6 @@ def multi_panel_cat_from_flat_data(
         legend_symbols = []
         legend_strings = []
 
-        # Set up your colors
-        colors = sns.color_palette(formatting['color_theme_category'])
-        line_counter = 0
-        patch_counter = 0
-        data_counter =0
-
         # Cycle through the y_data
         for j,y_d in enumerate(p_data['y_info']['series']):
             # Set the plot style to strip if it is missing
@@ -340,11 +348,10 @@ def multi_panel_cat_from_flat_data(
             # setup marker
             if 'marker' not in y_d:
                 y_d['marker'] = strip_formatting['marker_list'][j]
+
             # setup palette
             if 'field_palette' not in y_d:
                 y_d['field_palette'] = formatting['palette_list'][j]
-            print(y_d['field_palette'], f'panel {i}',f'for y_data {j}')
-
 
             x = pandas_data[p_data['x_field']]
             y = pandas_data[y_d['field']]
@@ -368,12 +375,11 @@ def multi_panel_cat_from_flat_data(
 
             min_y = np.amin([min_y, np.amin(y)])
             max_y = np.amax([max_y, np.amax(y)])
-
-            # handle next categorical variable if it is called
-
-
             # plot striplot depending on setyle
             if y_d['style'] == 'strip':
+                # setup marker
+                if 'marker' not in y_d:
+                   y_d['marker'] = strip_formatting['marker_list'][j]
                 sns.stripplot(x = x, y = y, hue = hue,
                                 ax = ax[i],
                                 marker = y_d['marker'],
@@ -386,12 +392,9 @@ def multi_panel_cat_from_flat_data(
                                 order = p_data['x_order'],
                                 hue_order = p_data['hue_order'],
                                 clip_on = False)
-
-
                 # handle legend 
                 if hue is not None:
                     for k,h in enumerate(p_data['hue_order']):
-                        print(k)
                         legend_symbols.append(Line2D([],[],
                                                 color = sns.color_palette(palette =y_d['field_palette'])[k],
                                                 marker = y_d['marker'],
@@ -399,11 +402,9 @@ def multi_panel_cat_from_flat_data(
                                                 linestyle = 'None'))
                         field_label = ''
                         if y_d['field_label']:
-                            field_label  = f'({y_d["field_label"]})'
-                        
+                            field_label  = f'({y_d["field_label"]})'   
                         str = f'{h} {field_label}'
                         legend_strings.append(str)
-
                 else:
                     if y_d['field_label']:
                         for l,o in enumerate(p_data['x_order']):
@@ -421,21 +422,19 @@ def multi_panel_cat_from_flat_data(
                             width = box_formatting['box_width'],
                             dodge = box_formatting['dodge'],
                             linewidth = box_formatting['linewidth'],
-                            palette = y_d['field_palette'])
-
+                            palette = y_d['field_palette'],
+                            order = p_data['x_order'],
+                            hue_order = p_data['hue_order'])
             # handle legend 
                 if hue is not None:
                     for k,h in enumerate(p_data['hue_order']):
-                        print(k)
                         legend_symbols.append(Patch(facecolor=sns.color_palette(palette =y_d['field_palette'])[k],
                                                     alpha=box_formatting['color_saturation']))
                         field_label = ''
                         if y_d['field_label']:
                             field_label  = f'({y_d["field_label"]})'
-                        
                         str = f'{h} {field_label}'
                         legend_strings.append(str)
-
                 else:
                     if y_d['field_label']:
                         for l,o in enumerate(p_data['x_order']):
@@ -444,65 +443,62 @@ def multi_panel_cat_from_flat_data(
                             legend_strings.append(y_d["field_label"])
 
             if y_d['style'] == 'point':
+                if 'marker' not in y_d:
+                    y_d['marker'] = strip_formatting['marker_list'][j]
+                for pf in point_formatting.keys():
+                    if pf not in y_d:
+                        y_d[pf] = point_formatting[pf]
+                if y_d['estimator'] == 'median':
+                   y_d['estimator'] = np.median 
+                elif y_d['estimator'] == 'mean':
+                    y_d['estimator'] = np.mean
+
                 sns.pointplot(x = x, y = y, hue=hue,
                                 ax = ax[i],
-                                join = formatting['join'],
-                                palette = formatting['color_theme_category'])
-            # Plot line depending on style
-            if (y_d['style'] == 'line'):
-                if 'field_color' in y_d:
-                    col = y_d['field_color']
+                                ci = y_d['confidence_int'],
+                                estimator = y_d['estimator'],
+                                markers = y_d['marker'],
+                                linestyles = y_d['linestyle'],
+                                dodge = y_d['dodge'],
+                                join = y_d['join'],
+                                palette = y_d['field_palette'],
+                                order = p_data['x_order'],
+                                hue_order = p_data['hue_order'],
+                                errwidth = y_d['errwidth'],
+                                capsize = y_d['capsize'])
+
+                # handle legend 
+                if hue is not None:
+                    for k,h in enumerate(p_data['hue_order']):
+                        legend_symbols.append(Line2D([],[],
+                                                color = sns.color_palette(palette =y_d['field_palette'])[k],
+                                                marker = y_d['marker'],
+                                                markersize = strip_formatting['marker_size'],
+                                                linestyle = y_d['linestyle']))
+                        field_label = ''
+                        if y_d['field_label']:
+                            field_label  = f'({y_d["field_label"]})'
+                        str = f'{h} {field_label}'
+                        legend_strings.append(str)
                 else:
-                    col = colors[line_counter]
-                ax[i].plot(x, y,
-                        linewidth = formatting['data_linewidth'],
-                        color = col,
-                        clip_on = True)
-                line_counter +=1
-                if y_d['field_label']:
-                    legend_symbols.append(
-                        Line2D([0], [0],
-                               color = ax[i].lines[-1].get_color(),
-                               lw = formatting['data_linewidth']))
-                    legend_strings.append(y_d['field_label'])
-
-            if (y_d['style'] == 'envelope'):
-                # Hold the maximum and minimum values
-                y_top = pd.Series(y).rolling(processing['envelope_n'],
-                                             min_periods=1).max().to_numpy()
-                y_bot = pd.Series(y).rolling(processing['envelope_n'],
-                                             min_periods=1).min().to_numpy()
-                yp = np.hstack((y_top, y_bot[::-1], y_top[0]))
-                xp = np.hstack((x, x[::-1], x[0]))
-                xy = np.vstack((xp,yp))
-                xy = np.array(np.array(xy).transpose());
-                if 'field_color' in y_d:
-                    col = y_d['field_color']
-                else:
-                    col = colors[patch_counter]
-                polygon = pat.Polygon(xy = xy,
-                                      closed = True,
-                                      clip_on = True,
-                                      fc = col,
-                                      alpha = formatting['patch_alpha'])
-                ax[i].add_patch(polygon)
-
-                if y_d['field_label']:
-                    legend_symbols.append(
-                            Patch(facecolor = col,
-                                  alpha =formatting['patch_alpha']))
-                    legend_strings.append(y_d['field_label'])
-
-                patch_counter = patch_counter+1
+                    if y_d['field_label']:
+                        for l,o in enumerate(p_data['x_order']):
+                            legend_symbols.append(Line2D([],[],
+                                                color = sns.color_palette(palette =y_d['field_palette'])[l],
+                                                marker = y_d['marker'],
+                                                markersize = strip_formatting['marker_size'],
+                                                linestyle = y_d['linestyle']))
+                            legend_strings.append(y_d["field_label"])
 
         # Tidy up axes and legends
-
-        # Set y limits
-        min_y = math.floor(min_y)
-        max_y = math.ceil(max_y)
-        ylim=([min_y, max_y])
         if ('ticks' in p_data['y_info']):
             ylim=tuple(p_data['y_info']['ticks'])
+        else:
+            ylim=(min_y, max_y)
+            scaling_type = []
+            if ('scaling_type' in p_data['y_info']):
+                scaling_type = p_data['y_info']['scaling_type']
+            ylim = deduce_axis_limits(ylim, mode_string=scaling_type)
 
         ax[i].set_ylim(ylim)
         ax[i].set_yticks(ylim)
@@ -532,8 +528,6 @@ def multi_panel_cat_from_flat_data(
                           fontsize = formatting['x_label_fontsize'])
         else:
             ax[i].set_xlabel('')
-            #ax[i].spines['bottom'].set_visible(False)
-            #ax[i].tick_params(labelbottom=False, bottom=False)
 
         # Set y label
         ax[i].set_ylabel(p_data['y_info']['label'],
@@ -573,6 +567,10 @@ def multi_panel_cat_from_flat_data(
     # Save if required
     if output_image_file_string:
         print('Saving figure to %s' % output_image_file_string)
+        output_dir = os.path.dirname(output_image_file_string)
+        if not os.path.isdir(output_dir):
+            print('Making output dir')
+            os.makedirs(output_dir)
         fig.savefig(output_image_file_string, dpi=dpi)
 
     return ax, fig
@@ -713,24 +711,6 @@ def multiple_less_than(v, multiple=0.2):
         v = m*np.floor(v/m)
 
     return v
-
-def transfer_ax(ax,new_figure,spec = 111):
-
-    old_fig = ax.figure
-    #ax.remove()
-    ax.figure = new_figure
-
-
-
-    dummy_ax = new_figure.add_subplot(spec)
-    pos = dummy_ax.get_position()
-
-    ax.set_position(pos)
-    print(f'dum_pos = {pos}',f'ax_pos = {ax.get_position()}')
-    dummy_ax.remove()
-    new_figure.axes.append(ax)
-    new_figure.add_axes(ax)
-    plt.close(old_fig)
 
 if __name__ == "__main__":
     (fig,ax) = multi_panel_from_flat_data()

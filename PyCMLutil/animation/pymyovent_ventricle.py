@@ -184,16 +184,17 @@ def display_vent(r1 = None,
     r = [lhs, bot, wid, hei]
     spec.tight_layout(fig, rect=r)
 
+ 
     # Save if required
     if output_image_file_string:
-        #writergif = animation.PillowWriter(fps=30)
-        #writervideo = animation.FFMpegWriter(fps=60)
-        #Writer = animation.writers['ffmpeg']
-        #writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)
-        #print('Saving figure to %s' % output_image_file_string)
+        print('Saving figure to %s' % output_image_file_string)
+        output_dir = os.path.dirname(output_image_file_string)
+        if not os.path.isdir(output_dir):
+            print('Making output dir')
+            os.makedirs(output_dir)
         fig.savefig(output_image_file_string, dpi=dpi)
-        #anim.save('animation.mp4', fps=30)
     plt.close()
+
 def init():
     r1 = pandas_data['internal_radius'].iloc[0]
     inner_circle.radius = r1

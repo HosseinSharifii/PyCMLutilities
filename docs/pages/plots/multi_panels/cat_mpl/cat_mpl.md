@@ -37,11 +37,12 @@ The following inputs for `pointplot` can be changed by defining them in the `poi
 - **capsize**: `capsize` parameter as is explained by [seaborn](https://seaborn.pydata.org/generated/seaborn.pointplot.html#seaborn.pointplot).
 
 ## Note
-The following parameters can be changed 
+The following parameters can be changed for all types of categorical plots. 
 - **palette**: `palette` parameter as is explained by [seaborn](https://seaborn.pydata.org/generated/seaborn.stripplot.html#seaborn.stripplot). It can be adjusted in each sub-section of `y_info` in the **template** file. 
 - **x_order**: `order` parameter as is explained by [seaborn](https://seaborn.pydata.org/generated/seaborn.stripplot.html#seaborn.stripplot). It can be defined for each panel data in the **template** file. 
 - **hue_order**: `hue_order` parameter as is explained by [seaborn](https://seaborn.pydata.org/generated/seaborn.stripplot.html#seaborn.stripplot). It can be defined for each panel data in the **template** file. 
-
+- For **stripplot** and **pointplot**, the marker size for each sub-section of `y_info` in the **template** file can be assigned manually by the user. Otherwise, it will be assigned by the default list of marker that can be changed in the `strip_formatting` section of the **template** file. Default marker list is :
+`strip_formatting['marker_list'] = ['o','^','s','x','*']`
 ## Function
 ````
 PyCMLutil.plots.multi_panel_cat.multi_panel_cat_from_flat_data(
@@ -56,16 +57,23 @@ PyCMLutil.plots.multi_panel_cat.multi_panel_cat_from_flat_data(
 
 **Parameters:**
 - **data_file_string : str, optional**
+    Path to the data file (either in format of csv or xlsx). The default is [].
 - **excel_sheet : str, optional**
+    Excel sheet where the data are stored. The default is *Sheet1*. 
 - **pandas_data : Pandas DataFrame, optional**
+    DataFrame containing the data. The default is [].
 - **template_file_string : str, optional**
+    Path to the .json structure file. The default is [].
 - **output_image_file_string : str, optional**
+    Path where the output plot is saved. The default is [].
 - **dpi : int, optional**
+    Image resolution. The default is 300.
 
 **Returns:**
 - **figure :**
+    Handle to the produced pyplot figure.
 - **ax :**
-
+     Handle to an array of the pyplot axes.
 ## Examples
 - First import the `multi_panel_cat` function from the `PyCMLutil` library.
 ````python

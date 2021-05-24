@@ -1,0 +1,116 @@
+{
+    "layout":
+    {
+        "fig_width": 8,
+        "top_margin": 0,
+        "left_margin": 0,
+        "right_margin": 0,
+        "panel_height": 4,
+        "grid_wspace": -0.5
+    },
+    "x_display":{
+        "global_x_field": "subject_type",
+        "global_hue": "valvular_disorder",
+        "label": "Subjects"
+    },
+    "formatting":
+    {
+        "x_label_fontsize": 12,
+        "y_label_fontsize": 12,
+        "tick_fontsize": 12,
+        "legend_fontsize": 10,
+        "y_label_pad": 40,
+        "legend_bbox_to_anchor": [1.0, 1.05],
+        "color_theme_category": "Set2",
+        "patch_alpha": 0.5,
+        "data_linewidth": 1
+    },
+    "strip_formatting":
+    {
+        "jitter": true
+    },
+    "box_formatting":
+    {
+        "linewidth": 2,
+        "dodge": true
+    },
+ 
+    "panels":
+    [
+        {
+            "column": 1,
+            "y_info":
+            {
+                "label": "Ventricle\nvolume\nindexed",
+                "scaling_type": "close_fit",
+                "series":
+                [
+                    {
+                        "field": "LVESVi",
+                        "style": "strip",
+                        "field_label": "ESVi"
+                    },
+                    {
+                        "field" : "LVESVi",
+                        "style" : "strip",
+                        "field_label": "EDVi"
+                    }
+                ]
+            }
+        },
+        {
+            "column": 2,
+            "y_info":
+            {
+                "label":"ventricle\nmass\nindexed",
+                "scaling_type": "close_fit",
+                "series":
+                [
+                    {
+                        "field": "LVMi",
+                        "style": "box",
+                        "field_palette": "Paired"
+                    }
+                ]
+            }
+        },
+        {
+            "column": 1,
+            "y_info":
+            {
+                "label":"Stroke\nvolume\nindexed",
+                "scaling_type": "close_fit",
+                "series":
+                [
+                    {
+                        "field": "SVi",
+                        "style": "point",
+                        "field_palette": "pastel"
+                    }
+                ]
+            }
+        },
+        {
+            "column": 2,
+            "y_info":
+            {
+                "label":"Ejection\nfraction",
+                "scaling_type": "close_fit",
+                "series":
+                [
+                    {
+                        "field": "EF",
+                        "style": "box",
+                        "field_palette": "Set2"
+                    },
+                    {
+                        "field": "EF",
+                        "style": "strip",
+                        "field_palette": "Greys",
+                        "marker": "o"
+                    }
+                ]
+            }
+        }
+    ]
+}

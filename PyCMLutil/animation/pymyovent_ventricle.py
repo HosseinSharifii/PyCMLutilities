@@ -98,9 +98,7 @@ def animate_pymyovent(data_file_string="",
 
     anim = dict()
     if "animation" in template_data:
-        for entry in template_data['animation']:
-            if entry != "ventricle_animation":
-                anim[entry] = template_data['animation'][entry]
+        anim = template_data['animation']
 
         temp_image_file_string = 'temp.png'
         with imageio.get_writer(output_image_file_string, mode='I') as writer:
@@ -201,8 +199,7 @@ def display_pymyovent(pandas_data = [],
 
 
     if "ventricle_animation" in template_data['animation']:
-        for entry in template_data['animation']['ventricle_animation']:
-            vent_anim[entry] = template_data['animation']['ventricle_animation'][entry]
+        vent_anim = template_data['animation']['ventricle_animation']
 
         r_ext = pandas_data[vent_anim['ext_radius']].iloc[index]
         r_int = pandas_data[vent_anim['int_radius']].iloc[index]
@@ -227,9 +224,6 @@ def display_pymyovent(pandas_data = [],
                                 panel_index = 0,
                                 formatting = formatting,
                                 t = time)
-            """ax[-1].text(-0.9*vent_anim['tick'], 0.9*vent_anim['tick'], ('Time %.3f s' % t),
-                        fontfamily = formatting['fontname'],
-                        fontsize = formatting['text_fontsize'])"""
 
         for a in ['top','bottom','left','right']:
             ax[-1].spines[a].set_visible(False)
@@ -278,7 +272,6 @@ def display_pymyovent(pandas_data = [],
             # Set up your colors
             colors = sns.color_palette(formatting['palette'])
             line_counter = 0
-            patch_counter = 0
 
             # Cycle through the y_data
             for j,y_d in enumerate(p_data['y_info']['series']):
@@ -340,10 +333,11 @@ def display_pymyovent(pandas_data = [],
 
             # Set x limits
             xlim = (min_x, max_x)
+            xlim = p_data['x_ticks']
             if x_ticks_defined==False:
-                xlim = deduce_axis_limits(xlim,'autoscaled')
+                xlim = deduce_axis_limits(p_data['x_ticks'],'autoscaled')
             ax[i].set_xlim(xlim)
-            ax[i].set_xticks(x_display['global_x_ticks'])
+            ax[i].set_xticks(xlim)
 
             # Set y limits
             if ('ticks' in p_data['y_info']):

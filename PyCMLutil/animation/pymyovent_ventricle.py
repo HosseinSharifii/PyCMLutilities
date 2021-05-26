@@ -15,6 +15,7 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import matplotlib.patches as mpatches 
 from matplotlib.lines import Line2D
+from matplotlib.patches import Rectangle
 
 
 import seaborn as sns
@@ -75,154 +76,6 @@ def default_layout():
 
     return layout
 
-
-def animate_ventricle(pandas_data = [],
-                    r1_name = "internal_radius",
-                    r2_name = "external_radius",
-                    template_data = dict(),
-                    output_image_file_string="",
-                    skip_frames = 10,
-                    anim_ticks = 100,
-                    dpi = 300):
-
-    import imageio
-
-    # Pull default formatting, then overwite any values from the template
-
-    start_index = 0
-    stop_index = 2000
-
-    temp_image_file_string = 'temp.png'
-    with imageio.get_writer(output_image_file_string, mode='I') as writer:
-        r1 = pandas_data[r1_name].iloc[stop_index].round(2)
-        r2 = pandas_data[r2_name].iloc[stop_index].round(2)
-        t = pandas_data['time'].iloc[stop_index]
-        x = pandas_data['time'].to_numpy()
-        vi = np.nonzero((x >= 0) & (x<=t))
-        x = x[vi]
-        y = pandas_data['pressure_arteries'].to_numpy()[vi]
-        hr = pandas_data['heart_rate'].iloc[stop_index]
-
-        print('init the main figure')
-        display_vent(r1=r1,r2=r2,
-                            output_image_file_string = temp_image_file_string,
-                            t=t,
-                            hr=hr,
-                            x = x,
-                            y = y,
-                            color = 'b',
-                            anim_ticks = anim_ticks)
-        image = imageio.imread(temp_image_file_string, format='png')
-        writer.append_data(image)
-        for i in np.arange(start_index, stop_index,skip_frames):
-                print(('Frame: %.0f' % i), end=' ', flush=True)
-
-                r1 = pandas_data[r1_name].iloc[i].round(2)
-                r2 = pandas_data[r2_name].iloc[i].round(2)
-                t = pandas_data['time'].iloc[i]
-                x = pandas_data['time'].to_numpy()
-                vi = np.nonzero((x >= 0) & (x<=t))
-                x = x[vi]
-                y = pandas_data['pressure_arteries'].to_numpy()[vi]
-                hr = pandas_data['heart_rate'].iloc[i]
-
-                print(('time: %.0f' % t), end=' ', flush=True)
-                display_vent(r1=r1,r2=r2,
-                            output_image_file_string = temp_image_file_string,
-                            t=t,
-                            hr=hr,
-                            x = x,
-                            y = y,
-                            color = 'r',
-                            anim_ticks = anim_ticks)
-
-                image = imageio.imread(temp_image_file_string, format='png')
-                writer.append_data(image)
-        print('Animation built')
-        print('Animation written to %s' % output_image_file_string)
-    os.remove(temp_image_file_string)
-
-def display_vent(r1 = None,
-                r2 = None,
-                template_data = dict(),
-                output_image_file_string="",
-                t = 0,
-                hr= 0,
-                x = [],
-                y = [],
-                color='blue',
-                anim_ticks = 100,
-                dpi = 300):
-
-    formatting = default_formatting()
-    if ('formatting' in template_data):
-        for entry in template_data['formatting']:
-            formatting[entry] = template_data['formatting'][entry]
-
-    # Pull default layout, then overwite any values from the template
-    layout = default_layout()
-    if 'layout' in template_data:
-        for entry in template_data['layout']:
-            layout[entry] = template_data['layout'][entry]
-
-    fig = plt.figure(constrained_layout = False)
-    fig.set_size_inches([layout['fig_width'], layout['fig_height']])
-    nrows=2
-    ncols=2
-    spec = gridspec.GridSpec(nrows = nrows,
-                             ncols = ncols,
-                             figure = fig,
-                             wspace = layout['grid_wspace'],
-                             hspace = layout['grid_hspace'])
-    colors = ['#EE938C','#D76F67']
-    radius = [r2,r1]
-
-    for row in np.arange(nrows):
-        ax = fig.add_subplot(spec[row,0])
-        if row==0:
-            for i,r in enumerate(radius):
-                fc = colors[i]
-                circle = plt.Circle((0,0),r,fill = True, fc = fc, ec = fc)
-                ax.add_patch(circle)
-                ax.set_title('Corss-sectional basal view',
-                                fontfamily = formatting['fontname'],
-                                fontsize = formatting['title_fontsize'])
-                ax.text(0.7*anim_ticks, 0.9*anim_ticks, (f'Time {t}\nHR {hr}'),
-                        fontfamily = formatting['fontname'],
-                        fontsize = formatting['text_fontsize'])
-        elif row ==1:
-            for i,r in enumerate(radius):
-                fc = colors[i] 
-                wedge = mpatches.Wedge((0,0),r,180,0,fc = fc,ec=fc)
-                ax.add_patch(wedge)
-                ax.set_title('Longitudinal view',
-                                fontfamily = formatting['fontname'],
-                                fontsize = formatting['title_fontsize'])
-                
-
-        for a in ['top','bottom','left','right']:
-            ax.spines[a].set_visible(False)
-        ax.set_ylim(-anim_ticks,anim_ticks)
-        ax.set_yticks([])
-        ax.set_xlim(-anim_ticks,anim_ticks)
-        ax.set_xticks([])
-    ax = fig.add_subplot(spec[0,1])
-    ax.plot(x,y,color = color)
-    ax.set_xlim(0,20)
-    # Tidy overall figure
-    # Move plots inside margins
-    lhs = layout['left_margin']/layout['fig_width']
-    bot = layout['bottom_margin']/layout['fig_height']
-    wid = (layout['fig_width']-layout['left_margin']-layout['right_margin'])/layout['fig_width']
-    hei = (layout['fig_height']-layout['bottom_margin']-layout['top_margin'])/layout['fig_height']
-    r = [lhs, bot, wid, hei]
-    spec.tight_layout(fig, rect=r)
-
-    # Save if required
-    if output_image_file_string:
-        fig.savefig(output_image_file_string, dpi=dpi)
-    plt.close()
-
 def animate_pymyovent(data_file_string="",
                         pandas_data = [],
                         template_file_string="",
@@ -249,19 +102,19 @@ def animate_pymyovent(data_file_string="",
             if entry != "ventricle_animation":
                 anim[entry] = template_data['animation'][entry]
 
-    temp_image_file_string = 'temp.png'
-    with imageio.get_writer(output_image_file_string, mode='I') as writer:
-        for i in np.arange(anim['start_index'],anim['stop_index'],anim['skip_frames']):
-            print(('Frame: %.0f' % i), end=' ', flush=True)
-            display_pymyovent(pandas_data = pandas_data,
-                                template_data = template_data,
-                                index = i,
-                                output_image_str = temp_image_file_string)
-            image = imageio.imread(temp_image_file_string, format='png')
-            writer.append_data(image)
-        print('Animation built')
-        print('Animation written to %s' % output_image_file_string)
-    os.remove(temp_image_file_string)
+        temp_image_file_string = 'temp.png'
+        with imageio.get_writer(output_image_file_string, mode='I') as writer:
+            for i in np.arange(anim['start_index'],anim['stop_index'],anim['skip_frames']):
+                print(('Frame: %.0f' % i), end=' ', flush=True)
+                display_pymyovent(pandas_data = pandas_data,
+                                    template_data = template_data,
+                                    index = i,
+                                    output_image_str = temp_image_file_string)
+                image = imageio.imread(temp_image_file_string, format='png')
+                writer.append_data(image)
+            print('Animation built')
+            print('Animation written to %s' % output_image_file_string)
+        os.remove(temp_image_file_string)
 
 def display_pymyovent(pandas_data = [],
                         template_data = [],
@@ -343,61 +196,76 @@ def display_pymyovent(pandas_data = [],
     # start with the basal view
     vent_anim = dict()
     vent_colors = ['#EE938C','#D76F67']
-    if 'animation' in template_data:
-        if "ventricle_animation" in template_data['animation']:
-            for entry in template_data['animation']['ventricle_animation']:
-                vent_anim[entry] = template_data['animation']['ventricle_animation'][entry]
+    time = pandas_data['time'].iloc[index]
 
-            r_ext = pandas_data[vent_anim['ext_radius']].iloc[index]
-            r_int = pandas_data[vent_anim['int_radius']].iloc[index]
-            t = pandas_data['time'].iloc[index]
-            radius = [r_ext,r_int]
 
-            if nrows%2 ==0:
-                row_splitter = int(nrows/2)
-            else:
-                row_splitter = int(nrows/2)+1
 
-            ax.append(fig.add_subplot(spec[:row_splitter,0]))
-            for i,r in enumerate(radius):
-                fc = vent_colors[i]
-                circle = plt.Circle((0,0),r,fill = True, fc = fc, ec = fc)
-                ax[-1].add_patch(circle)
-                ax[-1].set_title('Corss-sectional basal view',
-                                    fontfamily = formatting['fontname'],
-                                    fontsize = formatting['title_fontsize'])
-                ax[-1].text(-0.9*vent_anim['tick'], 0.9*vent_anim['tick'], ('Time %.3f s' % t),
-                            fontfamily = formatting['fontname'],
-                            fontsize = formatting['text_fontsize'])
+    if "ventricle_animation" in template_data['animation']:
+        for entry in template_data['animation']['ventricle_animation']:
+            vent_anim[entry] = template_data['animation']['ventricle_animation'][entry]
 
-            for a in ['top','bottom','left','right']:
-                ax[-1].spines[a].set_visible(False)
-            ax_lim = (-vent_anim['tick'],vent_anim['tick'])
-            ax[-1].set_ylim(ax_lim)
-            ax[-1].set_yticks([])
-            ax[-1].set_xlim(ax_lim)
-            ax[-1].set_xticks([])
-            
-            ax.append(fig.add_subplot(spec[row_splitter:,0]))
-            for i,r in enumerate(radius):
-                fc = vent_colors[i] 
-                wedge = mpatches.Wedge((0,0),r,180,0,fc = fc,ec=fc)
-                ax[-1].add_patch(wedge)
-                ax[-1].set_title('Longitudinal view',
+        r_ext = pandas_data[vent_anim['ext_radius']].iloc[index]
+        r_int = pandas_data[vent_anim['int_radius']].iloc[index]
+        
+        radius = [r_ext,r_int]
+
+        if nrows%2 ==0:
+            row_splitter = int(nrows/2)
+        else:
+            row_splitter = int(nrows/2)+1
+
+        ax.append(fig.add_subplot(spec[:row_splitter,0]))
+        for i,r in enumerate(radius):
+            fc = vent_colors[i]
+            circle = plt.Circle((0,0),r,fill = True, fc = fc, ec = fc)
+            ax[-1].add_patch(circle)
+            ax[-1].set_title('Corss-sectional basal view',
                                 fontfamily = formatting['fontname'],
                                 fontsize = formatting['title_fontsize'])
-            for a in ['top','bottom','left','right']:
-                ax[-1].spines[a].set_visible(False)
-            ax[-1].set_ylim(ax_lim)
-            ax[-1].set_yticks([])
-            ax[-1].set_xlim(ax_lim)
-            ax[-1].set_xticks([])
+            handle_time_counter(template_data,
+                                ax[-1],
+                                panel_index = 0,
+                                formatting = formatting,
+                                t = time)
+            """ax[-1].text(-0.9*vent_anim['tick'], 0.9*vent_anim['tick'], ('Time %.3f s' % t),
+                        fontfamily = formatting['fontname'],
+                        fontsize = formatting['text_fontsize'])"""
+
+        for a in ['top','bottom','left','right']:
+            ax[-1].spines[a].set_visible(False)
+        ax_lim = (-vent_anim['tick'],vent_anim['tick'])
+        ax[-1].set_ylim(ax_lim)
+        ax[-1].set_yticks([])
+        ax[-1].set_xlim(ax_lim)
+        ax[-1].set_xticks([])
+            
+        ax.append(fig.add_subplot(spec[row_splitter:,0]))
+        for i,r in enumerate(radius):
+            fc = vent_colors[i] 
+            wedge = mpatches.Wedge((0,0),r,180,0,fc = fc,ec=fc)
+            ax[-1].add_patch(wedge)
+            ax[-1].set_title('Longitudinal view',
+                            fontfamily = formatting['fontname'],
+                            fontsize = formatting['title_fontsize'])
+            handle_time_counter(template_data,
+                                ax[-1],
+                                panel_index = 1,
+                                formatting = formatting,
+                                t = time)
+        for a in ['top','bottom','left','right']:
+            ax[-1].spines[a].set_visible(False)
+        ax[-1].set_ylim(ax_lim)
+        ax[-1].set_yticks([])
+        ax[-1].set_xlim(ax_lim)
+        ax[-1].set_xticks([])
                 
     
     # Now return to panel data, scan through adding plots as you go
     if 'panels' in template_data:
         row_counters = np.zeros(ncols, dtype=int)
         for i,p_data in enumerate(panel_data):
+            if "ventricle_animation" in template_data['animation']:
+                i += 2
             # Update row counters and add axis
             row_counters[p_data['column']-1] += 1
             c = p_data['column']
@@ -458,7 +326,7 @@ def display_pymyovent(pandas_data = [],
                         col = y_d['field_color']
                     else:
                         col = colors[line_counter]
-                    ax[-1].plot(x, y,
+                    ax[i].plot(x, y,
                             linewidth = formatting['data_linewidth'],
                             color = col,
                             clip_on = True)
@@ -474,8 +342,8 @@ def display_pymyovent(pandas_data = [],
             xlim = (min_x, max_x)
             if x_ticks_defined==False:
                 xlim = deduce_axis_limits(xlim,'autoscaled')
-            ax[-1].set_xlim(xlim)
-            ax[-1].set_xticks(x_display['global_x_ticks'])
+            ax[i].set_xlim(xlim)
+            ax[i].set_xticks(x_display['global_x_ticks'])
 
             # Set y limits
             if ('ticks' in p_data['y_info']):
@@ -487,13 +355,13 @@ def display_pymyovent(pandas_data = [],
                     scaling_type = p_data['y_info']['scaling_type']
                 ylim = deduce_axis_limits(ylim, mode_string=scaling_type)
 
-            ax[-1].set_ylim(ylim)
-            ax[-1].set_yticks(ylim)
+            ax[i].set_ylim(ylim)
+            ax[i].set_yticks(ylim)
 
             # Update axes, tick font and size
             for a in ['left','bottom']:
-                ax[-1].spines[a].set_linewidth(formatting['axis_linewidth'])
-            ax[-1].tick_params('both',
+                ax[i].spines[a].set_linewidth(formatting['axis_linewidth'])
+            ax[i].tick_params('both',
                     width = formatting['axis_linewidth'])
 
             for tick_label in ax[i].get_xticklabels():
@@ -504,20 +372,20 @@ def display_pymyovent(pandas_data = [],
                 tick_label.set_fontsize(formatting['tick_fontsize'])
 
             # Remove top and right-hand size of box
-            ax[-1].spines['top'].set_visible(False)
-            ax[-1].spines['right'].set_visible(False)
+            ax[i].spines['top'].set_visible(False)
+            ax[i].spines['right'].set_visible(False)
             # Display x axis if bottom
             if (r==(rows_per_column[c-1]-1)):
-                ax[-1].set_xlabel(x_display['label'],
+                ax[i].set_xlabel(x_display['label'],
                             labelpad = formatting['x_label_pad'],
                             fontfamily = formatting['fontname'],
                             fontsize = formatting['x_label_fontsize'])
             else:
-                ax[-1].spines['bottom'].set_visible(False)
-                ax[-1].tick_params(labelbottom=False, bottom=False)
+                ax[i].spines['bottom'].set_visible(False)
+                ax[i].tick_params(labelbottom=False, bottom=False)
 
             # Set y label
-            ax[-1].set_ylabel(p_data['y_info']['label'],
+            ax[i].set_ylabel(p_data['y_info']['label'],
                         loc='center',
                         verticalalignment='center',
                         labelpad = formatting['y_label_pad'],
@@ -527,7 +395,7 @@ def display_pymyovent(pandas_data = [],
 
             # Add legend if it exists
             if legend_symbols:
-                leg = ax[-1].legend(legend_symbols, legend_strings,
+                leg = ax[i].legend(legend_symbols, legend_strings,
                             loc = formatting['legend_location'],
                             handlelength = formatting['legend_handlelength'],
                             bbox_to_anchor=(formatting['legend_bbox_to_anchor'][0],
@@ -539,6 +407,11 @@ def display_pymyovent(pandas_data = [],
                 leg.get_frame().set_linewidth(formatting['axis_linewidth'])
                 leg.get_frame().set_edgecolor("black")
             handle_annotations(template_data, ax[i], i, formatting)
+            handle_time_counter(template_data,
+                                ax[i],
+                                panel_index = i,
+                                formatting = formatting,
+                                t = time)
         # Tidy overall figure
         # Move plots inside margins
         lhs = layout['left_margin']/layout['fig_width']
@@ -553,6 +426,17 @@ def display_pymyovent(pandas_data = [],
     if output_image_str:
         fig.savefig(output_image_str, dpi=dpi)
     plt.close()
+def handle_time_counter(template_data,ax,panel_index,formatting,t = 0):
+    if not ('time_counter' in template_data['animation']):
+        return 
+    timer_data = template_data['animation']['time_counter']
+
+    for t_an in timer_data:
+        if t_an['panel'] == panel_index:
+            ax.text(t_an['x_coord'], t_an['y_coord'], 
+                            ('Time %.3f s' % t),
+                            fontfamily = formatting['fontname'],
+                            fontsize = formatting['text_fontsize'])
 
 def handle_annotations(template_data, ax, panel_index, formatting):
     if not ('annotations' in template_data):
@@ -633,6 +517,7 @@ def handle_annotations(template_data, ax, panel_index, formatting):
                         horizontalalignment='center',
                         verticalalignment='center',
                         color = an['label_color'])
+
 
 def deduce_axis_limits(lim, mode_string=[]):
     """

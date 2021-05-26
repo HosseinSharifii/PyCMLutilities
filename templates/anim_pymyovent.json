@@ -26,6 +26,17 @@
         "data_linewidth": 1,
         "palette":"pastel"
     },
+    "annotations":
+    [
+        {
+            "panel": 2,
+            "type": "box",
+            "x_coord": 5,
+            "y_rel_coord": 1.1,
+            "width": 10,
+            "rel_height": 0.3
+        }
+    ],    
     "animation":
     {
         "start_index": 0,
@@ -36,7 +47,20 @@
             "ext_radius": "external_radius",
             "int_radius": "internal_radius",
             "tick": 100
-        }
+        },
+        "time_counter":
+        [
+            {
+                "panel": 0,
+                "x_coord": -90,
+                "y_coord": 90
+            },
+            {
+                "panel": 2,
+                "x_coord": 5,
+                "y_coord": 0.9
+            }
+        ]
     },
     "panels":
     [

@@ -1,0 +1,92 @@
+{
+    "layout":
+    {
+        "fig_width": 10,
+        "top_margin": 0,
+        "left_margin": 0,
+        "right_margin": 0,
+        "panel_height": 4,
+        "grid_wspace": -0.5
+    },
+    "x_display":{
+        "global_x_field": "time",
+        "label": "Time (s)"
+    },
+    "formatting":
+    {
+        "x_label_fontsize": 12,
+        "y_label_fontsize": 12,
+        "text_fontsize":12,
+        "tick_fontsize": 12,
+        "title_fontsize": 12,
+        "legend_fontsize": 10,
+        "y_label_pad": 40,
+        "legend_bbox_to_anchor": [1.0, 1.05],
+        "patch_alpha": 0.5,
+        "data_linewidth": 1,
+        "palette":"pastel"
+    },
+    "animation":
+    {
+        "start_index": 0,
+        "stop_index":2000,
+        "skip_frames": 50,
+        "ventricle_animation":
+        {
+            "ext_radius": "external_radius",
+            "int_radius": "internal_radius",
+            "tick": 100
+        }
+    },
+    "panels":
+    [
+        {
+            "column": 1,
+            "y_info":
+            {
+                "label": "Activation\npulse",
+                "scaling_type": "close_fit",
+                "ticks": [0,1],
+                "series":
+                [
+                    {
+                        "field": "activation",
+                        "style": "line"
+                    }
+                ]
+            }
+        },
+        {
+            "column": 1,
+            "y_info":
+            {
+                "label": "arterial\npressure",
+                "scaling_type": "close_fit",
+                "ticks": [0,140],
+                "series":
+                [
+                    {
+                        "field": "pressure_arteries",
+                        "style": "line"
+                    }
+                ]
+            }
+        },
+        {
+            "column": 2,
+            "y_info":
+            {
+                "label": "ventricle \npressure",
+                "scaling_type": "close_fit",
+                "ticks": [0,150],
+                "series":
+                [
+                    {
+                        "field": "pressure_ventricle",
+                        "style": "line"
+                    }
+                ]
+            }
+        }
+    ]
+}

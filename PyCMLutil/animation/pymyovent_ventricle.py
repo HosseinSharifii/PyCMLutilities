@@ -146,10 +146,12 @@ def display_pymyovent(pandas_data = [],
     if 'label' not in x_display:
         x_display['label'] = x_display['global_x_field']
 
-    #Check for panels tag.
-    # if it exists, count the ncols and nrows for the multipanel plots
+    # first handele the frame of the figure by counting 
+    # the number of columns and rows
     ncols = 0
     nrows = 0
+    vent_col_index = 0
+    # check the existance of mutipanel plots
     if 'panels' in template_data:
         panel_data = template_data['panels']
         ncols = 0
@@ -167,10 +169,12 @@ def display_pymyovent(pandas_data = [],
             rows_per_column = row_counters
             nrows = np.amax(row_counters)
 
-    # now add 1 col for plotting 2D ventricle shape
-    ncols += 1
-    if nrows < 1:
-        nrows = 2
+    # now add 1 col for plotting 2D ventricle shapes if is is activated
+    if "ventricle_animation" in template_data['animation']: 
+        ncols += 1
+        vent_col_index = 1
+        if nrows < 1:
+            nrows = 2
     ax = []
     # Now you know how many panels, create a figure of the right size
     layout = default_layout()
@@ -181,7 +185,6 @@ def display_pymyovent(pandas_data = [],
     fig_height = layout['top_margin'] + \
                 (nrows * layout['panel_height']) + \
                  layout['bottom_margin']
-
     # Now create figure
     fig = plt.figure(constrained_layout=False)
     fig.set_size_inches([layout['fig_width'], fig_height])
@@ -253,17 +256,18 @@ def display_pymyovent(pandas_data = [],
         ax[-1].set_xlim(ax_lim)
         ax[-1].set_xticks([])
                 
-    
     # Now return to panel data, scan through adding plots as you go
     if 'panels' in template_data:
         row_counters = np.zeros(ncols, dtype=int)
         for i,p_data in enumerate(panel_data):
             if "ventricle_animation" in template_data['animation']:
+                # if the ventricular shapes are generating, 
+                # increase the index by 2
                 i += 2
             # Update row counters and add axis
             row_counters[p_data['column']-1] += 1
-            c = p_data['column']
-            r = row_counters[c-1]-1
+            c = p_data['column']-1 + vent_col_index 
+            r = row_counters[c - vent_col_index]-1
             ax.append(fig.add_subplot(spec[r,c]))
 
             legend_symbols = []
@@ -369,7 +373,7 @@ def display_pymyovent(pandas_data = [],
             ax[i].spines['top'].set_visible(False)
             ax[i].spines['right'].set_visible(False)
             # Display x axis if bottom
-            if (r==(rows_per_column[c-1]-1)):
+            if (r==(rows_per_column[c-vent_col_index]-1)):
                 ax[i].set_xlabel(x_display['label'],
                             labelpad = formatting['x_label_pad'],
                             fontfamily = formatting['fontname'],
@@ -420,6 +424,7 @@ def display_pymyovent(pandas_data = [],
     if output_image_str:
         fig.savefig(output_image_str, dpi=dpi)
     plt.close()
+
 def handle_time_counter(template_data,ax,panel_index,formatting,t = 0):
     if not ('time_counter' in template_data['animation']):
         return 

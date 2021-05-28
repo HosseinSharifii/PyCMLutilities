@@ -108,7 +108,7 @@ def animate_pymyovent(data_file_string="",
                                     template_data = template_data,
                                     index = i,
                                     output_image_str = temp_image_file_string)
-                image = imageio.imread(temp_image_file_string, format='png')
+                image = imageio.imread(temp_image_file_string)
                 writer.append_data(image)
             print('Animation built')
             print('Animation written to %s' % output_image_file_string)
@@ -197,16 +197,14 @@ def display_pymyovent(pandas_data = [],
     # start with the basal view
     vent_anim = dict()
     vent_colors = ['#EE938C','#D76F67']
+    vent_counter = 0
     time = pandas_data['time'].iloc[index]
 
 
-
-    if "ventricle_animation" in template_data['animation']:
+    if 'ventricle_animation' in template_data['animation']:
         vent_anim = template_data['animation']['ventricle_animation']
-
         r_ext = pandas_data[vent_anim['ext_radius']].iloc[index]
-        r_int = pandas_data[vent_anim['int_radius']].iloc[index]
-        
+        r_int = pandas_data[vent_anim['int_radius']].iloc[index]  
         radius = [r_ext,r_int]
 
         if nrows%2 ==0:
@@ -214,47 +212,51 @@ def display_pymyovent(pandas_data = [],
         else:
             row_splitter = int(nrows/2)+1
 
-        ax.append(fig.add_subplot(spec[:row_splitter,0]))
-        for i,r in enumerate(radius):
-            fc = vent_colors[i]
-            circle = plt.Circle((0,0),r,fill = True, fc = fc, ec = fc)
-            ax[-1].add_patch(circle)
-            ax[-1].set_title('Corss-sectional basal view',
+        for v_panel in vent_anim['panels']:
+            # add ax based on the type
+            if v_panel['type'] == 'basal':
+                ax.append(fig.add_subplot(spec[:row_splitter,0]))
+                for i,r in enumerate(radius):
+                    fc = vent_colors[i]
+                    circle = plt.Circle((0,0),r,fill = True, fc = fc, ec = fc)
+                    ax[-1].add_patch(circle)
+
+                ax[-1].set_title('Corss-sectional basal view',
                                 fontfamily = formatting['fontname'],
                                 fontsize = formatting['title_fontsize'])
-            handle_time_counter(template_data,
+                vent_counter += 1
+                handle_reference_lines(ax[-1],vent_anim,v_panel,
+                                        formatting,pandas_data)
+                handle_time_counter(template_data,
                                 ax[-1],
                                 panel_index = 0,
                                 formatting = formatting,
                                 t = time)
+            elif v_panel['type'] == 'longitudinal':
+                ax.append(fig.add_subplot(spec[row_splitter:,0]))
+                for i,r in enumerate(radius):
+                    fc = vent_colors[i]
+                    wedge = mpatches.Wedge((0,0),r,180,0,fc = fc,ec=fc)
+                    ax[-1].add_patch(wedge)
 
-        for a in ['top','bottom','left','right']:
-            ax[-1].spines[a].set_visible(False)
-        ax_lim = (-vent_anim['tick'],vent_anim['tick'])
-        ax[-1].set_ylim(ax_lim)
-        ax[-1].set_yticks([])
-        ax[-1].set_xlim(ax_lim)
-        ax[-1].set_xticks([])
-            
-        ax.append(fig.add_subplot(spec[row_splitter:,0]))
-        for i,r in enumerate(radius):
-            fc = vent_colors[i] 
-            wedge = mpatches.Wedge((0,0),r,180,0,fc = fc,ec=fc)
-            ax[-1].add_patch(wedge)
-            ax[-1].set_title('Longitudinal view',
-                            fontfamily = formatting['fontname'],
-                            fontsize = formatting['title_fontsize'])
-            handle_time_counter(template_data,
+                ax[-1].set_title('Longitudinal view',
+                                fontfamily = formatting['fontname'],
+                                fontsize = formatting['title_fontsize'])
+                vent_counter += 1
+                handle_reference_lines(ax[-1],vent_anim,v_panel,
+                                        formatting,pandas_data)
+                handle_time_counter(template_data,
                                 ax[-1],
                                 panel_index = 1,
                                 formatting = formatting,
                                 t = time)
-        for a in ['top','bottom','left','right']:
-            ax[-1].spines[a].set_visible(False)
-        ax[-1].set_ylim(ax_lim)
-        ax[-1].set_yticks([])
-        ax[-1].set_xlim(ax_lim)
-        ax[-1].set_xticks([])
+            for a in ['top','bottom','left','right']:
+                ax[-1].spines[a].set_visible(False)
+            ax_lim = (-vent_anim['tick'],vent_anim['tick'])
+            ax[-1].set_ylim(ax_lim)
+            ax[-1].set_yticks([])
+            ax[-1].set_xlim(ax_lim)
+            ax[-1].set_xticks([])
                 
     # Now return to panel data, scan through adding plots as you go
     if 'panels' in template_data:
@@ -263,7 +265,9 @@ def display_pymyovent(pandas_data = [],
             if "ventricle_animation" in template_data['animation']:
                 # if the ventricular shapes are generating, 
                 # increase the index by 2
-                i += 2
+                
+                print('vent_counter',vent_counter)
+                i += vent_counter
             # Update row counters and add axis
             row_counters[p_data['column']-1] += 1
             c = p_data['column']-1 + vent_col_index 
@@ -424,6 +428,77 @@ def display_pymyovent(pandas_data = [],
     if output_image_str:
         fig.savefig(output_image_str, dpi=dpi)
     plt.close()
+
+def handle_reference_lines(ax,vent_anim,v_panel,formatting,pandas_data):
+    # add reference shapes if it is set
+    if not('references' in v_panel):
+        return
+
+    ref_leg_symb = []
+    ref_leg_str = []
+    refrences = v_panel['references']
+  
+    for ri,r_data in enumerate(refrences):
+        ref_range = r_data['index_range']
+        # grab the radiuses based on the type of reference
+        if r_data['type'] == 'end_diastolic':
+            r_ext_ref = pandas_data[vent_anim['ext_radius']].\
+                        iloc[ref_range[0]:ref_range[1]].max()
+            r_int_ref = pandas_data[vent_anim['int_radius']].\
+                        iloc[ref_range[0]:ref_range[1]].max()
+            # setup the format
+            if not ('linestyle' in r_data):
+                r_data['linestyle'] = '--'
+            if not ('linewidth' in r_data):
+                r_data['linewidth'] = formatting['data_linewidth']
+            if not ('color' in r_data):
+                r_data['color'] = sns.color_palette(palette ='Greys_r')[ri]
+            ref_leg_str.append('End_Diastolic')
+
+        elif r_data['type'] == 'end_systolic':
+            r_ext_ref = pandas_data[vent_anim['ext_radius']].\
+                        iloc[ref_range[0]:ref_range[1]].min()
+            r_int_ref = pandas_data[vent_anim['int_radius']].\
+                        iloc[ref_range[0]:ref_range[1]].min()
+            # setup the format
+            if not ('linestyle' in r_data):
+                r_data['linestyle'] = ':'
+            if not ('linewidth' in r_data):
+                r_data['linewidth'] = formatting['data_linewidth']
+            if not ('color' in r_data):
+                r_data['color'] = sns.color_palette(palette ='Greys_r')[ri]
+            ref_leg_str.append('End_Systolic')
+
+        for r in [r_ext_ref,r_int_ref]:
+            if v_panel['type'] == 'basal':
+                ref_patch = plt.Circle((0,0),r,
+                                        fill = False,
+                                        linestyle = r_data['linestyle'],
+                                        linewidth = r_data['linewidth'],
+                                        color  = r_data['color'])
+            elif v_panel['type'] == 'longitudinal':
+                ref_patch = mpatches.Wedge((0,0),r,180,0,
+                                        fill = False,
+                                        linestyle = r_data['linestyle'],
+                                        linewidth = r_data['linewidth'],
+                                        color  = r_data['color'])
+            ax.add_patch(ref_patch)
+
+        ref_leg_symb.append(Line2D([0],[0],
+                            ls = r_data['linestyle'],
+                            color = r_data['color'],
+                            lw = r_data['linewidth']))
+    leg = ax.legend(ref_leg_symb, ref_leg_str,
+                    loc = formatting['legend_location'],
+                    handlelength = formatting['legend_handlelength'],
+                    bbox_to_anchor=(formatting['legend_bbox_to_anchor'][0],
+                                         formatting['legend_bbox_to_anchor'][1]),
+                    prop={'family': formatting['fontname'],
+                               'size': formatting['legend_fontsize']},
+                    ncol = int(np.ceil(len(ref_leg_symb)/
+                                            formatting['max_rows_per_legend'])))
+    leg.get_frame().set_linewidth(formatting['axis_linewidth'])
+    leg.get_frame().set_edgecolor('black')
 
 def handle_time_counter(template_data,ax,panel_index,formatting,t = 0):
     if not ('time_counter' in template_data['animation']):

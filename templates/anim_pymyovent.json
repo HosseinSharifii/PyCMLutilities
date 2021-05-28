@@ -5,12 +5,12 @@
         "top_margin": 0,
         "left_margin": 0,
         "right_margin": 0,
-        "panel_height": 4,
+        "panel_height": 3,
         "grid_wspace": -0.5
     },
     "x_display":{
         "global_x_field": "time",
-        "global_x_ticks": [10,20],
+        "global_x_ticks": [0,20],
         "label": "Time (s)"
     },
     "formatting":
@@ -29,15 +29,9 @@
     },  
     "animation":
     {
-        "start_index": 1000,
-        "stop_index":5000,
+        "start_index": 0,
+        "stop_index":2000,
         "skip_frames": 50,
-        "ventricle_animation":
-        {
-            "ext_radius": "external_radius",
-            "int_radius": "internal_radius",
-            "tick": 100
-        },
         "time_counter":
         [
             {
@@ -45,7 +39,46 @@
                 "x_coord": -90,
                 "y_coord": 90
             }
-        ]
+        ],
+        "ventricle_animation":
+        {
+            "ext_radius": "external_radius",
+            "int_radius": "internal_radius",
+            "tick": 100,
+            "panels":
+            [
+                {
+                    "type": "basal",
+                    "references":
+                    [
+                        {
+                            "type": "end_diastolic",
+                            "index_range": [300,500]
+                        },
+                        {
+                            "type": "end_systolic",
+                            "index_range": [300,500]
+                        }
+                    ]
+                
+                },
+                {
+                    "type": "longitudinal",
+                    "references":
+                    [
+                        {
+                            "type": "end_diastolic",
+                            "index_range": [300,500]
+                        },
+                        {
+                            "type": "end_systolic",
+                            "index_range": [300,500]
+                        }
+                    ]
+                
+                }
+            ]
+        }
     },
     "panels":
     [
@@ -82,7 +115,7 @@
             }
         },
         {
-            "column": 2,
+            "column": 1,
             "y_info":
             {
                 "label": "ventricle \npressure",

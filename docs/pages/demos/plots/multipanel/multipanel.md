@@ -2,7 +2,7 @@
 title: Multipanel
 has_children: false
 grand_parent: Demos
-parent: Plots
+parent: Plots examples
 nav_order: 1
 ---
 # Multipanel

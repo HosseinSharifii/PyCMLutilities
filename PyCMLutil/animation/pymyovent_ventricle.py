@@ -79,7 +79,8 @@ def default_layout():
 def animate_pymyovent(data_file_string="",
                         pandas_data = [],
                         template_file_string="",
-                        output_image_file_string=""):
+                        output_image_file_string="",
+                        dpi = 100):
     
     import imageio
 
@@ -107,7 +108,8 @@ def animate_pymyovent(data_file_string="",
                 display_pymyovent(pandas_data = pandas_data,
                                     template_data = template_data,
                                     index = i,
-                                    output_image_str = temp_image_file_string)
+                                    output_image_str = temp_image_file_string,
+                                    dpi = dpi)
                 image = imageio.imread(temp_image_file_string)
                 writer.append_data(image)
             print('Animation built')
@@ -118,7 +120,7 @@ def display_pymyovent(pandas_data = [],
                         template_data = [],
                         index = 0,
                         output_image_str="",
-                        dpi=300):
+                        dpi=100):
     # Check for template file, make an empty dict if absent
 
     # Pull default formatting, then overwite any values from the template
@@ -264,9 +266,7 @@ def display_pymyovent(pandas_data = [],
         for i,p_data in enumerate(panel_data):
             if "ventricle_animation" in template_data['animation']:
                 # if the ventricular shapes are generating, 
-                # increase the index by 2
-                
-                print('vent_counter',vent_counter)
+                # increase the index by length of vent axes
                 i += vent_counter
             # Update row counters and add axis
             row_counters[p_data['column']-1] += 1
@@ -414,16 +414,16 @@ def display_pymyovent(pandas_data = [],
                                 panel_index = i,
                                 formatting = formatting,
                                 t = time)
-        # Tidy overall figure
-        # Move plots inside margins
-        lhs = layout['left_margin']/layout['fig_width']
-        bot = layout['bottom_margin']/fig_height
-        wid = (layout['fig_width']-0*layout['left_margin']-layout['right_margin'])/layout['fig_width']
-        hei = (fig_height-0*layout['bottom_margin']-layout['top_margin'])/fig_height
-        r = [lhs, bot, wid, hei]
-        spec.tight_layout(fig, rect=r)
+    # Tidy overall figure
+    # Move plots inside margins
+    lhs = layout['left_margin']/layout['fig_width']
+    bot = layout['bottom_margin']/fig_height
+    wid = (layout['fig_width']-0*layout['left_margin']-layout['right_margin'])/layout['fig_width']
+    hei = (fig_height-0*layout['bottom_margin']-layout['top_margin'])/fig_height
+    r = [lhs, bot, wid, hei]
+    spec.tight_layout(fig, rect=r)
 
-        fig.align_labels()
+    fig.align_labels()
     # Save if required
     if output_image_str:
         fig.savefig(output_image_str, dpi=dpi)

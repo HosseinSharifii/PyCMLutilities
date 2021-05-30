@@ -8,6 +8,7 @@ Created on Sat Dec 12 22:31:36 2020
 import json
 import pandas as pd
 import numpy as np
+import os
 
 from scipy.signal import find_peaks
 
@@ -401,6 +402,10 @@ def multi_panel_from_flat_data(
     # Save if required
     if output_image_file_string:
         print('Saving figure to %s' % output_image_file_string)
+        output_dir = os.path.dirname(output_image_file_string)
+        if not os.path.isdir(output_dir):
+            print('Making output dir')
+            os.makedirs(output_dir)
         fig.savefig(output_image_file_string, dpi=dpi)
 
     return (fig,ax)

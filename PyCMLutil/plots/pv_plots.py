@@ -8,6 +8,7 @@ Created on Sat April 16 2021
 import json
 import pandas as pd
 import numpy as np
+import os
 
 from scipy.signal import find_peaks
 
@@ -112,15 +113,13 @@ def display_pv_loop(
         Path to the .json structure file. The default is [].
     template_data : Dictionary , optional
         It contains the formatting and layout variables
-    pressure_var_nam: str, required
+    pressure_var_name: str, required
         Variable name for "Pressure" in the data frame
     volume_var_name: str, required
         Variable name for "Volume" in the data frame
     time_var_name : str, optional
         Variable name for "Time" in the data frame
-     legend_labels: array of str, optional
-    output_image_file_string : str, optional
-        Path where the output plot is saved. The default is [].
+    legend_labels: array of str, optional
     x_tick: str, optional
         Assigned mode for calculating ticks for X axis
     y_tick: str, optional
@@ -129,6 +128,8 @@ def display_pv_loop(
         X axis label
     y_label: str, optional
         Y axis label
+    output_image_file_string : str, optional
+        Path where the output plot is saved. The default is [].
     dpi : int, optional
         Image resolution. The default is 300.
 
@@ -317,6 +318,10 @@ def display_pv_loop(
     # Save if required
     if output_image_file_string:
         print('Saving figure to %s' % output_image_file_string)
+        output_dir = os.path.dirname(output_image_file_string)
+        if not os.path.isdir(output_dir):
+            print('Making output dir')
+            os.makedirs(output_dir)
         fig.savefig(output_image_file_string, dpi=dpi)
 
     return (fig,ax)

@@ -49,6 +49,7 @@ def default_formatting():
     formatting['palette'] = None
     formatting['title_fontsize'] = 10
     formatting['text_fontsize'] = 10
+    formatting['vent_colors'] = ['#EE938C','#D76F67']
 
 
     return formatting
@@ -198,7 +199,7 @@ def display_pymyovent(pandas_data = [],
     # handle the ventricle shapes
     # start with the basal view
     vent_anim = dict()
-    vent_colors = ['#EE938C','#D76F67']
+    vent_colors = formatting['vent_colors']
     vent_counter = 0
     time = pandas_data['time'].iloc[index]
 
@@ -219,6 +220,7 @@ def display_pymyovent(pandas_data = [],
             if v_panel['type'] == 'basal':
                 ax.append(fig.add_subplot(spec[:row_splitter,0]))
                 for i,r in enumerate(radius):
+                    
                     fc = vent_colors[i]
                     circle = plt.Circle((0,0),r,fill = True, fc = fc, ec = fc)
                     ax[-1].add_patch(circle)

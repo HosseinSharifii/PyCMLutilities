@@ -455,7 +455,9 @@ def handle_reference_lines(ax,vent_anim,v_panel,formatting,pandas_data):
                 r_data['linewidth'] = formatting['data_linewidth']
             if not ('color' in r_data):
                 r_data['color'] = sns.color_palette(palette ='Greys_r')[ri]
-            ref_leg_str.append('End_Diastolic')
+            if not ('label' in r_data):
+                r_data['label'] = 'End_Diastolic'
+            ref_leg_str.append(r_data['label'])
 
         elif r_data['type'] == 'end_systolic':
             r_ext_ref = pandas_data[vent_anim['ext_radius']].\
@@ -469,7 +471,9 @@ def handle_reference_lines(ax,vent_anim,v_panel,formatting,pandas_data):
                 r_data['linewidth'] = formatting['data_linewidth']
             if not ('color' in r_data):
                 r_data['color'] = sns.color_palette(palette ='Greys_r')[ri]
-            ref_leg_str.append('End_Systolic')
+            if not ('label' in r_data):
+                r_data['label'] = 'End_Siastolic'
+            ref_leg_str.append(r_data['label'])
 
         for r in [r_ext_ref,r_int_ref]:
             if v_panel['type'] == 'basal':

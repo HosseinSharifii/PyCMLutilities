@@ -219,28 +219,16 @@ def multi_panel_cat_from_flat_data(
         x_display = dict()
 
     # Set plausible values if fields are missing
-    """ Need to think a bit more how to deal with missing fields for categorical data"""
-    ####
     if 'global_x_field' not in x_display:
-        #x_display['global_x_field'] = pandas_data.columns[0]
         cat_sub_list = pandas_data.select_dtypes(include=['object']).columns.tolist()
         x_display['global_x_field'] = pandas_data[cat_sub_list[0]]
-        print(cat_sub_list)
-    """if 'global_x_ticks' not in x_display:
-        x_lim = (pandas_data[x_display['global_x_field']].iloc[0],
-                 pandas_data[x_display['global_x_field']].iloc[-1])
-        x_display['global_x_ticks'] = \
-            np.asarray(deduce_axis_limits(x_lim, 'autoscaling'))
-        x_ticks_defined=False
-    else:
-        x_ticks_defined=True"""
     if 'label' not in x_display:
         x_display['label'] = x_display['global_x_field']
     if 'order' not in x_display:
         x_display['order'] = \
             pandas_data[x_display['global_x_field']].unique()
-    # setup hue 
 
+    # setup hue 
     if 'global_hue' not in x_display:
         x_display['global_hue'] = None
         x_display['global_hue_order'] = None
@@ -345,10 +333,6 @@ def multi_panel_cat_from_flat_data(
             if 'field_label' not in y_d:
                 y_d['field_label'] = []
 
-            # setup marker
-            if 'marker' not in y_d:
-                y_d['marker'] = strip_formatting['marker_list'][j]
-
             # setup palette
             if 'field_palette' not in y_d:
                 y_d['field_palette'] = formatting['palette_list'][j]
@@ -359,7 +343,6 @@ def multi_panel_cat_from_flat_data(
                 hue = None
             else: 
                 hue = pandas_data[p_data['hue']]
-            
 
             if 'scaling_factor' in y_d:
                 y = y * y_d['scaling_factor']
@@ -380,67 +363,47 @@ def multi_panel_cat_from_flat_data(
                 # setup marker
                 if 'marker' not in y_d:
                    y_d['marker'] = strip_formatting['marker_list'][j]
+
+                for sf in strip_formatting.keys():
+                    if sf not in y_d and sf != "marker_list":
+                        y_d[sf] = strip_formatting[sf]
+
                 sns.stripplot(x = x, y = y, hue = hue,
                                 ax = ax[i],
                                 marker = y_d['marker'],
-                                jitter = strip_formatting['jitter'],
-                                dodge = strip_formatting['dodge'],
+                                jitter = y_d['jitter'],
+                                dodge = y_d['dodge'],
                                 palette = y_d['field_palette'],
-                                edgecolor = strip_formatting['marker_ec'],
-                                linewidth = strip_formatting['marker_elw'],
-                                size = strip_formatting['marker_size'],
+                                edgecolor = y_d['marker_ec'],
+                                linewidth = y_d['marker_elw'],
+                                size = y_d['marker_size'],
                                 order = p_data['x_order'],
                                 hue_order = p_data['hue_order'],
                                 clip_on = False)
                 # handle legend 
-                if hue is not None:
-                    for k,h in enumerate(p_data['hue_order']):
-                        legend_symbols.append(Line2D([],[],
-                                                color = sns.color_palette(palette =y_d['field_palette'])[k],
-                                                marker = y_d['marker'],
-                                                markersize = strip_formatting['marker_size'],
-                                                linestyle = 'None'))
-                        field_label = ''
-                        if y_d['field_label']:
-                            field_label  = f'({y_d["field_label"]})'   
-                        str = f'{h} {field_label}'
-                        legend_strings.append(str)
-                else:
-                    if y_d['field_label']:
-                        for l,o in enumerate(p_data['x_order']):
-                            legend_symbols.append(Line2D([],[],
-                                                color = sns.color_palette(palette =y_d['field_palette'])[l],
-                                                marker = y_d['marker'],
-                                                markersize = strip_formatting['marker_size'],
-                                                linestyle = 'None'))
-                            legend_strings.append(y_d["field_label"])
-
+                legend_symbols, legend_strings = \
+                    handle_legend(hue,p_data,y_d,legend_symbols,
+                                legend_strings,strip_formatting)
+                
             if y_d['style'] == 'box':
+                for bf in box_formatting.keys():
+                    if bf not in y_d:
+                        y_d[bf] = box_formatting[bf]
+
                 sns.boxplot(x = x, y = y, hue=hue,
                             ax = ax[i],
-                            saturation = box_formatting['color_saturation'],
-                            width = box_formatting['box_width'],
-                            dodge = box_formatting['dodge'],
-                            linewidth = box_formatting['linewidth'],
+                            saturation = y_d['color_saturation'],
+                            width = y_d['box_width'],
+                            dodge = y_d['dodge'],
+                            linewidth = y_d['linewidth'],
                             palette = y_d['field_palette'],
                             order = p_data['x_order'],
                             hue_order = p_data['hue_order'])
-            # handle legend 
-                if hue is not None:
-                    for k,h in enumerate(p_data['hue_order']):
-                        legend_symbols.append(Patch(facecolor=sns.color_palette(palette =y_d['field_palette'])[k],
-                                                    alpha=box_formatting['color_saturation']))
-                        field_label = ''
-                        if y_d['field_label']:
-                            field_label  = f'({y_d["field_label"]})'
-                        str = f'{h} {field_label}'
-                        legend_strings.append(str)
-                else:
-                    if y_d['field_label']:
-                        for l,o in enumerate(p_data['x_order']):
-                            legend_symbols.append(Patch(facecolor=sns.color_palette(palette =y_d['field_palette'])[l],
-                                                    alpha=box_formatting['color_saturation']))
-                            legend_strings.append(y_d["field_label"])
+                
+                # handle legend 
+                legend_symbols, legend_strings = \
+                    handle_legend(hue,p_data,y_d,legend_symbols,
+                                legend_strings,box_formatting)
 
             if y_d['style'] == 'point':
                 if 'marker' not in y_d:
@@ -468,28 +431,10 @@ def multi_panel_cat_from_flat_data(
                                 capsize = y_d['capsize'])
 
                 # handle legend 
-                if hue is not None:
-                    for k,h in enumerate(p_data['hue_order']):
-                        legend_symbols.append(Line2D([],[],
-                                                color = sns.color_palette(palette =y_d['field_palette'])[k],
-                                                marker = y_d['marker'],
-                                                markersize = strip_formatting['marker_size'],
-                                                linestyle = y_d['linestyle']))
-                        field_label = ''
-                        if y_d['field_label']:
-                            field_label  = f'({y_d["field_label"]})'
-                        str = f'{h} {field_label}'
-                        legend_strings.append(str)
-                else:
-                    if y_d['field_label']:
-                        for l,o in enumerate(p_data['x_order']):
-                            legend_symbols.append(Line2D([],[],
-                                                color = sns.color_palette(palette =y_d['field_palette'])[l],
-                                                marker = y_d['marker'],
-                                                markersize = strip_formatting['marker_size'],
-                                                linestyle = y_d['linestyle']))
-                            legend_strings.append(y_d["field_label"])
-
+                legend_symbols, legend_strings = \
+                    handle_legend(hue,p_data,y_d,legend_symbols,
+                                legend_strings,strip_formatting)
+                
         # Tidy up axes and legends
         if ('ticks' in p_data['y_info']):
             ylim=tuple(p_data['y_info']['ticks'])
@@ -575,6 +520,79 @@ def multi_panel_cat_from_flat_data(
 
     return ax, fig
 
+def handle_legend(hue,
+                p_data,
+                y_d,
+                legend_symbols, 
+                legend_strings,
+                style_formatting):
+
+    # handle legend for stripplot
+    if y_d['style'] == 'strip':
+        if hue is not None:
+            for k,h in enumerate(p_data['hue_order']):
+                legend_symbols.append(Line2D([],[],
+                                    color = sns.color_palette(palette =y_d['field_palette'])[k],
+                                    marker = y_d['marker'],
+                                    markersize = style_formatting['marker_size'],
+                                    linestyle = 'None'))
+                field_label = ''
+                if y_d['field_label']:
+                    field_label  = f'({y_d["field_label"]})'   
+                str = f'{h} {field_label}'
+                legend_strings.append(str)
+        else:
+            if y_d['field_label']:
+                for l,o in enumerate(p_data['x_order']):
+                    legend_symbols.append(Line2D([],[],
+                                    color = sns.color_palette(palette =y_d['field_palette'])[l],
+                                    marker = y_d['marker'],
+                                    markersize = style_formatting['marker_size'],
+                                    linestyle = 'None'))
+                    legend_strings.append(y_d["field_label"])
+
+    elif y_d['style'] == 'box':
+        if hue is not None:
+            for k,h in enumerate(p_data['hue_order']):
+                legend_symbols.append(Patch(facecolor=sns.color_palette(palette =y_d['field_palette'])[k],
+                                        alpha=style_formatting['color_saturation']))
+                field_label = ''
+                if y_d['field_label']:
+                    field_label  = f'({y_d["field_label"]})'
+                str = f'{h} {field_label}'
+                legend_strings.append(str)
+        else:
+            if y_d['field_label']:
+                for l,o in enumerate(p_data['x_order']):
+                    legend_symbols.append(Patch(facecolor=sns.color_palette(palette =y_d['field_palette'])[l],
+                                                alpha=style_formatting['color_saturation']))
+                    legend_strings.append(y_d["field_label"])
+
+    elif y_d['style'] == 'point':
+    # handle legend for pointplot
+        if hue is not None:
+            for k,h in enumerate(p_data['hue_order']):
+                legend_symbols.append(Line2D([],[],
+                                    color = sns.color_palette(palette =y_d['field_palette'])[k],
+                                    marker = y_d['marker'],
+                                    markersize = style_formatting['marker_size'],
+                                    linestyle = y_d['linestyle']))
+                field_label = ''
+                if y_d['field_label']:
+                    field_label  = f'({y_d["field_label"]})'
+                str = f'{h} {field_label}'
+                legend_strings.append(str)
+        else:
+            if y_d['field_label']:
+                for l,o in enumerate(p_data['x_order']):
+                    legend_symbols.append(Line2D([],[],
+                                        color = sns.color_palette(palette =y_d['field_palette'])[l],
+                                        marker = y_d['marker'],
+                                        markersize = style_formatting['marker_size'],
+                                        linestyle = y_d['linestyle']))
+                    legend_strings.append(y_d["field_label"])
+    
+    return legend_symbols, legend_strings
 
 def handle_annotations(template_data, ax, panel_index, formatting):
     if not ('annotations' in template_data):

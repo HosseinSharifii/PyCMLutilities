@@ -11,7 +11,6 @@ import numpy as np
 import os
 
 
-from scipy.signal import find_peaks
 from numpy import mean
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec

@@ -12,6 +12,7 @@ import os
 
 
 from numpy import mean
+import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from matplotlib.lines import Line2D
@@ -47,8 +48,7 @@ def default_formatting():
     formatting['tick_fontsize'] = 11
     formatting['patch_alpha'] = 0.3
     formatting['max_rows_per_legend'] = 4
-    formatting['color_theme_category'] = 'Set2'
-    formatting['palette_list'] = ['pastel','Dark2_r','Set2','flare','deep']
+    formatting['palette_list'] = ['tab10','Pastel1','Dark2','Set2','Set1','Accent']
     formatting['dodge'] = True
     
     # pointplot
@@ -100,12 +100,12 @@ def default_point_formatting():
 
     Returns
     -------
-    box_formatting : dict
+    point_formatting : dict
         dictionnary containing the default formatting for point plot.
 
     """
     point_formatting = dict()
-    point_formatting['confidence_int'] = 95
+    point_formatting['confidence_int'] = 'sd'
     point_formatting['estimator'] = np.mean
     point_formatting['linestyle'] = '-'
     point_formatting['dodge'] = True
@@ -379,6 +379,7 @@ def multi_panel_cat_from_flat_data(
                                 order = p_data['x_order'],
                                 hue_order = p_data['hue_order'],
                                 clip_on = False)
+              
                 # handle legend 
                 legend_symbols, legend_strings = \
                     handle_legend(hue,p_data,y_d,legend_symbols,
@@ -388,7 +389,6 @@ def multi_panel_cat_from_flat_data(
                 for bf in box_formatting.keys():
                     if bf not in y_d:
                         y_d[bf] = box_formatting[bf]
-
                 sns.boxplot(x = x, y = y, hue=hue,
                             ax = ax[i],
                             saturation = y_d['color_saturation'],
@@ -415,6 +415,12 @@ def multi_panel_cat_from_flat_data(
                 elif y_d['estimator'] == 'mean':
                     y_d['estimator'] = np.mean
 
+                # draw joint line
+                color = None
+                if hue is None:
+                    colors = sns.color_palette(y_d['field_palette'])
+                    y_d['field_palette'] = None
+                    color = colors[j]
                 sns.pointplot(x = x, y = y, hue=hue,
                                 ax = ax[i],
                                 ci = y_d['confidence_int'],
@@ -424,10 +430,13 @@ def multi_panel_cat_from_flat_data(
                                 dodge = y_d['dodge'],
                                 join = y_d['join'],
                                 palette = y_d['field_palette'],
+                                color = color,
                                 order = p_data['x_order'],
                                 hue_order = p_data['hue_order'],
                                 errwidth = y_d['errwidth'],
                                 capsize = y_d['capsize'])
+                
+                
 
                 # handle legend 
                 legend_symbols, legend_strings = \

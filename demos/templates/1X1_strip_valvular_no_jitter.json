@@ -26,7 +26,7 @@
     },
     "strip_formatting":
     {
-        "jitter": true
+        "jitter": false
     },
     "panels":
     [
@@ -41,7 +41,8 @@
                     {
                         "field": "LVMi",
                         "style": "strip",
-                        "scaling_factor":1
+                        "scaling_factor":1,
+                        "marker": "^"
                     }
                 ]
             }

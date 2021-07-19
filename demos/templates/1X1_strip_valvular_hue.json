@@ -11,7 +11,8 @@
     "x_display":{
         "global_x_field": "subject_type",
         "label": "Subjects",
-        "order": ["control", "patients"]
+        "order": ["control", "patients"],
+        "global_hue": "valvular_disorder"
     },
     "formatting":
     {
@@ -32,6 +33,7 @@
     [
         {
             "column": 1,
+            
             "y_info":
             {
                 "label": "LV mass\nindexed",
@@ -41,7 +43,8 @@
                     {
                         "field": "LVMi",
                         "style": "strip",
-                        "scaling_factor":1
+                        "scaling_factor":1,
+                        "marker": "^"
                     }
                 ]
             }

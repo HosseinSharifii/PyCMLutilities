@@ -10,8 +10,7 @@
     },
     "x_display":{
         "global_x_field": "subject_type",
-        "label": "Subjects",
-        "order": ["control", "patients"]
+        "label": "Subjects"
     },
     "formatting":
     {
@@ -21,6 +20,7 @@
         "legend_fontsize": 10,
         "y_label_pad": 40,
         "legend_bbox_to_anchor": [1.0, 1.05],
+        "color_theme_category": "Set2",
         "patch_alpha": 0.5,
         "data_linewidth": 1
     },
@@ -28,10 +28,20 @@
     {
         "jitter": true
     },
+    "box_formatting":
+    {
+        "linewidth": 2,
+        "dodge": true
+    },
+    "point_formatting":
+    {
+        "estimator": "median"
+    },
     "panels":
     [
         {
             "column": 1,
+            
             "y_info":
             {
                 "label": "LV mass\nindexed",
@@ -40,8 +50,13 @@
                 [
                     {
                         "field": "LVMi",
+                        "style": "point"
+                    },
+                    {
+                        "field": "LVMi",
                         "style": "strip",
-                        "scaling_factor":1
+                        "field_palette": "Greys",
+                        "marker": "o"
                     }
                 ]
             }

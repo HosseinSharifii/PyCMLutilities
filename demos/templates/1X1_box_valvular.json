@@ -24,14 +24,11 @@
         "patch_alpha": 0.5,
         "data_linewidth": 1
     },
-    "strip_formatting":
-    {
-        "jitter": true
-    },
     "panels":
     [
         {
             "column": 1,
+            
             "y_info":
             {
                 "label": "LV mass\nindexed",
@@ -40,8 +37,7 @@
                 [
                     {
                         "field": "LVMi",
-                        "style": "strip",
-                        "scaling_factor":1
+                        "style": "box"
                     }
                 ]
             }

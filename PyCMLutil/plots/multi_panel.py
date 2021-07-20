@@ -255,7 +255,7 @@ def multi_panel_from_flat_data(
                 y = y * y_d['scaling_factor']
 
             if 'log_display' in y_d:
-                if y_d['log_display']=='on':
+                if y_d['log_display']== True:
                     y = np.log10(y)
 
             # Track min and max y

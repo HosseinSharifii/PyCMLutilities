@@ -47,7 +47,7 @@ def default_formatting():
     formatting['tick_fontsize'] = 11
     formatting['patch_alpha'] = 0.3
     formatting['max_rows_per_legend'] = 4
-    formatting['color_theme_category'] = None
+    formatting['palette'] = None
 
     return formatting
 
@@ -226,7 +226,7 @@ def multi_panel_from_flat_data(
         legend_strings = []
 
         # Set up your colors
-        colors = sns.color_palette(formatting['color_theme_category'])
+        colors = sns.color_palette(formatting['palette'])
         line_counter = 0
         patch_counter = 0
 

@@ -244,6 +244,8 @@ def multi_panel_from_flat_data(
                 p_data['x_field'] = x_display['global_x_field']
             if 'x_ticks' not in p_data:
                 p_data['x_ticks'] = x_display['global_x_ticks']
+            if 'x_label' not in p_data:
+                p_data['x_label'] = x_display['label']
 
             x = pandas_data[p_data['x_field']].to_numpy()
             vi = np.nonzero((x >= p_data['x_ticks'][0]) &
@@ -357,7 +359,7 @@ def multi_panel_from_flat_data(
 
         # Display x axis if bottom
         if (r==(rows_per_column[c]-1)):
-            ax[i].set_xlabel(x_display['label'],
+            ax[i].set_xlabel(p_data['x_label'],
                           labelpad = formatting['x_label_pad'],
                           fontfamily = formatting['fontname'],
                           fontsize = formatting['x_label_fontsize'])

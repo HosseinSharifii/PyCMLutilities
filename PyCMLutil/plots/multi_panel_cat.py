@@ -49,7 +49,6 @@ def default_formatting():
     formatting['patch_alpha'] = 0.3
     formatting['max_rows_per_legend'] = 4
     formatting['palette_list'] = ['tab10','Pastel1','Dark2','Set2','Set1','Accent']
-    formatting['dodge'] = True
     
     # pointplot
     formatting['join'] = True
@@ -310,6 +309,8 @@ def multi_panel_cat_from_flat_data(
         if 'x_field' not in p_data:
             p_data['x_field'] = x_display['global_x_field']
             p_data['x_order'] = x_display['order']
+        if 'x_label' not in p_data:
+                p_data['x_label'] = x_display['label']
         # setup hue
         if 'hue' not in p_data:
             #check global field
@@ -421,6 +422,7 @@ def multi_panel_cat_from_flat_data(
                     colors = sns.color_palette(y_d['field_palette'])
                     y_d['field_palette'] = None
                     color = colors[j]
+
                 sns.pointplot(x = x, y = y, hue=hue,
                                 ax = ax[i],
                                 ci = y_d['confidence_int'],
@@ -475,7 +477,7 @@ def multi_panel_cat_from_flat_data(
 
         # Display x axis if bottom
         if (r==(rows_per_column[c]-1)):
-            ax[i].set_xlabel(x_display['label'],
+            ax[i].set_xlabel(p_data['x_label'],
                           labelpad = formatting['x_label_pad'],
                           fontfamily = formatting['fontname'],
                           fontsize = formatting['x_label_fontsize'])

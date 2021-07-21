@@ -60,7 +60,6 @@
             "rel_height": 0.2,
             "linestyle": "-",
             "linewidth": 2,
-            "color": "cyan",
             "face_color":"lightblue",
             "edge_color": "red"
         },

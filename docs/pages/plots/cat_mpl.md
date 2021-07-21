@@ -6,7 +6,10 @@ nav_order: 2
 ---
 
 # Multipanel Categorical
+{:.no_toc}
 
+* TOC
+{:toc}
 ## Overview
 This python function is useful for plotting multipanel plots when one variable is categorical.  
 
@@ -39,10 +42,16 @@ PyCMLutil.plots.multi_panel_cat.multi_panel_cat_from_flat_data(
 | figure | Handle to the produced pyplot figure |
 | ax | Handle to an array of the pyplot axes. |
 
+### Data spreadsheet
 
-At the moment, this function only supports three type of [seaborn](https://seaborn.pydata.org/index.html) plots for categorical data as follows. Similar to multipanel plots for [numerical](./num_mpl.html) data, the user has control over the plotting, formatting, etc. through passing the template file in `.json` fromat. 
+Similar to multipanel plot function for [numerical](num_mpl.html), multipanel categorical plot reads data in two-dimensional tabular structure stored either in excel spreadsheets or Pandas [DataFrame](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html). The only difference in this function is that one of the variables must be categorical.
 
-The following optional formatting parameters for each type of categorical plots can be set by the user. Otherwise, <u>default values will be used</u>. 
+### Template files
+
+Again, multipanel categorical plot function uses similar [JSON](https://www.json.org/json-en.html) format for the template file. The only differences are explaind in below. 
+
+
+At the moment, this function only supports three type of [seaborn](https://seaborn.pydata.org/index.html) plots for categorical data as follows. The following optional formatting parameters for each type of categorical plots can be set by the user. Otherwise, <u>default values will be used</u>. 
 
 
 1. [stripplot()](https://seaborn.pydata.org/generated/seaborn.stripplot.html#seaborn.stripplot): 
@@ -60,8 +69,8 @@ The following optional formatting parameters for each type of categorical plots 
     | marker_elw | str, optional | edge line width of markers. |
     | marker_size | str, optional | marker size. |
     
-    1. To change the default values of these parameters, user can specify a new value to them when a plot within a panel is being defined under `series` sub-section in the **template** file. 
-    For instance, in below example, `jitter` and `dodge` are manually set by the user. Wherease, for the second plot, deafult values are being used by not defining a new valye.  
+    1. To change the default values for any of these parameters, user can do that within the `series` sub-section under `panels` section in the **template** file as is explained for multipanel [numerical](num_mpl.html) plots.  
+    For instance, in below example, `jitter` and `dodge` are manually set by the user. Wherease, for the second plot, deafult values are being used by not defining a new value.  
     ````javascript
     "series":
                 [
@@ -79,17 +88,19 @@ The following optional formatting parameters for each type of categorical plots 
                     }
                 ]
     ````
+    2. Previous method might be tough when a large number of **stripplots** are difined within a multipanel categorical figure. Alternatively, user can globally change some of the parameteres described in above by defining a section called `strip_formatting` in the **template** file. In this way, all defined changes would be applied to all **stripplot** within the figure. 
 
-    2. Previous method might be tough when a large number of **stripplots** are difined within a multipanel figure. Alternatively, user can broadly change some of the parameteres described in above by defining a section called `strip_formatting` in the **template** file. In this way, all defined changes in these parameteres would be applied to all **stripplot** within the figure. 
+    Default values for `strip_formatting` are:
+
     ````javascript
     "strip_formatting":
         {
-            "jitter": new_value
-            "dodge": new_value
-            "marker_ec": new_value
-            "marker_elw": new_value
-            "marker_size": new_value,
-            "marker_list": ['^','x','s','*']
+            "jitter": true,
+            "dodge": true,
+            "marker_ec": None,
+            "marker_elw": 0.5,
+            "marker_size": 8,
+            "marker_list": ['o','^','s','x','*']
         }
     ````
     
@@ -106,9 +117,10 @@ The following optional formatting parameters for each type of categorical plots 
     | linewidth | float, optional | Width of the gray lines that frame the plot elements. |
     | box_width | float, optional | Width of a full element when not using hue nesting, or width of all the elements for one level of the major grouping variable. |
     
-    1. Similar to **stripplot**, the default values of these parameters can be changed by the user where the **boxplot** is being defined defined under `series` sub-section in the **template** file. 
+    1. Similar to **stripplot**, the default values of these parameters can be changed by the user where the **boxplot** is being defined under `series` sub-section in the **template** file. 
     For instance, in below example, `field_palette` is manually set by the user. 
     ````javascript
+
     "series":
                 [
                     {
@@ -119,14 +131,18 @@ The following optional formatting parameters for each type of categorical plots 
                 ]
     ````
 
-    2. Again, this might be complicated when you are dealing with a large number of **boxplots**. Alternatively, user can broadly change some of the parameteres described in above by defining a section called `box_formatting` in the **template** file. In this way, all defined changes in these parameteres would be applied to all **boxplots** within the figure. 
+    2. Again, this might be complicated when you are dealing with a large number of **boxplots**. Alternatively, user can globally change some of the parameteres described in above by defining a section called `box_formatting` in the **template** file. In this way, all defined changes in these parameteres would be applied to all **boxplots** within the figure. 
+
+    Default values for `box_formatting` are:
+
     ````javascript
+
     "box_formatting":
         {
-            "color_saturation": new_value
-            "dodge": new_value
-            "box_width": new_value
-            "linewidth": new_value
+            "color_saturation": 1,
+            "dodge": true,
+            "box_width": 0.75,
+            "linewidth": 1
         }
     ````
 
@@ -147,7 +163,8 @@ The following optional formatting parameters for each type of categorical plots 
     | join | bool, optional | If True, lines will be drawn between point estimates at the same hue level. |
 
 
-    1. The default values of these parameteres can be altered for each **pointplot** within a panel by specify them in `series` sub-section for each panel data. For example, in the following panel, first **pointplot** uses statistical function of *mean* as the estimator, while the second one uses *median*.  
+    1. The default values of these parameteres can be altered for each **pointplot** within a subplot/ panel by specify them in `series` sub-section. For example, in the following panel, first **pointplot** uses statistical function of *mean* as the estimator, while the second one uses *median*.  
+
     ````javascript
     "series":
                 [
@@ -164,18 +181,20 @@ The following optional formatting parameters for each type of categorical plots 
                 ]
     ````
 
-    2. To broadly adjust these parameters, user needs to define a section called `point_formatting` and assign the new values in there. 
+    2. To globally adjust these parameters, user needs to define a section called `point_formatting` and assign the new values in there. 
+
+    Default values for `point_formatting` are:
+
     ````javascript
     "point_formatting":
         {
-            "confidence_int": new_value,
-            "estimator": new_value,
-            "linestyle": new_value,
-            "dodge": new_value,
-            "join": new_value,
-            "errwidth": new_value,
-            "capsize": new_value,
-            "linewidth": new_value
+            "confidence_int": "sd",
+            "estimator": "mean",
+            "linestyle": "-",
+            "dodge": true,
+            "join": true,
+            "errwidth": None,
+            "capsize": None
         }
     ````
 
@@ -183,12 +202,13 @@ The following optional formatting parameters for each type of categorical plots 
 - **hue**, **hue_order**, and **order** of categorical data can be defined in two manners: 
 1. They can be assigned globally to all subplots/panels via defining `global_hue`, `global_hue_order`, and `order`, respectively in the `x_display` section of the **template** file as follows:
     ````javascript
-        "x_display":{
-            "global_x_field": "subject_type",
-            "label": "Subjects",
-            "order": ["control","patients"],
-            "global_hue": "valvular_disorder",
-            "global_hue_order": ["AS","MR"]
+        "x_display":
+        {
+            "global_x_field": "global x-axis variable",
+            "label": "global x-axis label",
+            "order": ["value_1","value_2"],
+            "global_hue": "global hue variable",
+            "global_hue_order": ["hue_value_1","hue_value_2"]
         }
     ````
 2. Or they can be defined defined for each subplot independent of other panels via defining `hue`, `hue_oreder`, and `x_order` at each panel data in the **template** file. For instance:
@@ -213,6 +233,6 @@ The following optional formatting parameters for each type of categorical plots 
             }
         }
     ````
-Now try [demos](../demos/multipanel_categorical/categorical.html).
+Now try [demos](../demos/multipanel_categorical/categorical.html) to ger more familiar.
 
 

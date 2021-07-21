@@ -48,8 +48,8 @@ PyCMLutil.plots.multi_panel.multi_panel_from_flat_data(
 | figure | Handle to the produced pyplot figure |
 | ax | Handle to an array of the pyplot axes. |
 
-### Data spread sheet
-This function can reads data from stored in an excel spread sheet or Pandas DataFrame and generates the multipanel figure based on the **template** file. 
+### Data spreadsheet
+This function can reads data stored in an excel spreadsheet or Pandas DataFrame and generates the multipanel figure based on the **template** file. 
 
 Inputted data must be structured similar to a Pandas [DataFrame](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html). It should be a two-dimensional tabular data where each column represents a variable and each row represents a single observation for all variables. 
 
@@ -265,3 +265,5 @@ Through the template file, the user can control the whole process of plotting a 
     | rel_height | bool, optional | Height of `box` annotation relative to the amplitude of y-axis starting from the `y_rel_coord`. |
     | face_color | str, optional | Face color of the `box` annotation. Default is `None`. |
     | edge_color | str, optional | Color of `box` annotation frame. Default is `"black"`. |
+
+Now try [demos](../demos/multipanel_numerical/numerical.html)

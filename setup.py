@@ -29,7 +29,7 @@ if __name__ == "__main__":
     setuptools.setup(
         name=package_name,
         version=version,
-        author=authors,
+        author=authors["Principal Investigator"],
         author_email=maintainer_email,
         description="A usefule python package for generating sientific figures.",
         long_description=long_description,

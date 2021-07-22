@@ -1,4 +1,4 @@
-
+import setuptools
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
@@ -21,7 +21,7 @@ classifiers = [
 python_requires = ">=3.6"
 
 if __name__ == "__main__":
-    import setuptools
+    
     import sys 
     if sys.version_info[:2] < (3, 6):
         raise RuntimeError("PyCMLutil requires python >= 3.6.")

@@ -1,5 +1,6 @@
 # PyCMLutilities
 
+[![pupi version](https://img.shields.io/badge/pypi-v0.0.02-yellow)](https://pypi.org/project/PyCMLutil/)
 PyCMLutil library is a suite of tools for curve-fitting, plotting, and data analysis in Python. 
 This library is built upon of [matplotlib](https://matplotlib.org/), [seaborn](https://seaborn.pydata.org/index.html), and [pandas](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html) libraries.
 

@@ -4,7 +4,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 package_name = "PyCMLutil"
-version = "0.0.01"
+version = "0.0.02"
 authors = {"Principal Investigator": "Kenneth S. Campbell", 
             "Maintainer": "Hossein Sharifi"}
 maintainer_email = "hossein.sharifi@uky.edu"

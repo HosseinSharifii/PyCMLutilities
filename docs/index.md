@@ -9,6 +9,7 @@ has_children: False
 
 ## Overview 
 
-An early stage repository with files that are useful for muscle analysis
+PyCMLutil is a python-based package that helps 
 
-See [demos](demos/demos.md) to get started
+
+See [demos](pages/demos/demos.md) to get started. 

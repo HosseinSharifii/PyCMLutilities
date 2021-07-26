@@ -16,7 +16,7 @@ pip install PyCMLutil
 
 To clone the github [repository](https://github.com/Campbell-Muscle-Lab/PyCMLutilities):
 1. Create an empty folder on your local computer and rename it `PyCMLutil`.
-2. On the terminal windows of your local computer navigate to the created folder from the previous step:
+2. On the terminal windows of your local computer, navigate to the created folder from the previous step:
     ````
     $ cd <path_to_parrent_folder_PyCMLutil>/PyCMLutil
     ````

@@ -6,17 +6,14 @@ import numpy as np
 #pandas_data = pd.read_excel(data_str)
 #pandas_data.to_csv('data/pymyovent_sample.csv')
 def test_animation():
-	data_str = 'data/pymyovent_sample.csv'
-	temps = ['templates/2D_vent_anim.json',
-			'templates/multipanel_anim.json',
-			'templates/combined_anim.json']
-	temps = ['templates/combined_anim.json']
+	data_str = 'demos/data/test_data.xlsx'
+	
+	temps = ['demos/templates/mpl_anim.json']
 
-	pandas_data = pd.read_csv(data_str)
 	for temp in temps:
-		output_str = 'examples' + '/' + temp.split('/')[-1].split('.')[0] + '.mp4'
+		output_str = 'demos' + '/' +'animation/' + temp.split('/')[-1].split('.')[0] + '.mp4'
 
-		ap(pandas_data = pandas_data,
+		ap(data_file_string = data_str,
 			template_file_string = temp,
 			output_image_file_string = output_str)
 

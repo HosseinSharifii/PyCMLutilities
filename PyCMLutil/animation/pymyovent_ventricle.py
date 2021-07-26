@@ -79,6 +79,7 @@ def default_layout():
 
 def animate_pymyovent(data_file_string="",
                         pandas_data = [],
+                        excel_sheet = 'Sheet1',
                         template_file_string="",
                         output_image_file_string="",
                         dpi = 100):
@@ -103,6 +104,13 @@ def animate_pymyovent(data_file_string="",
         anim = template_data['animation']
 
         temp_image_file_string = 'temp.png'
+
+        # Make the output directory if it does not exist
+        output_dir = os.path.dirname(output_image_file_string)
+        if not os.path.isdir(output_dir):
+            print('Making output dir')
+            os.makedirs(output_dir)
+
         with imageio.get_writer(output_image_file_string, mode='I') as writer:
             for i in np.arange(anim['start_index'],anim['stop_index'],anim['skip_frames']):
                 print(('Frame: %.0f' % i), end=' ', flush=True)

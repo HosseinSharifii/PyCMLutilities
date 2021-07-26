@@ -21,22 +21,22 @@ def test_pycmlutil():
     elif (no_of_arguments == 2):
         if sys.argv[1] == "test_mpl_num":
             print("Testing multi_panel_plots for numerical data")
-            from test.test_mpl import test_mpl 
+            from tests.test_mpl import test_mpl 
             test_mpl()
 
         elif sys.argv[1] == "test_mpl_cat":
             print("Testing multi_panel_plots for categorical data")
-            from test.test_cat import test_cat
+            from tests.test_cat import test_cat
             test_cat()
 
         elif sys.argv[1] == "test_animation":
             print("Testing animation feature")
-            from test.test_animation import test_animation
+            from tests.test_animation import test_animation
             test_animation()
 
         elif sys.argv[1] == "test_pv":
             print("Testing pressure-volume loop plots")
-            from test.test_pv import test_pv
+            from tests.test_pv import test_pv
             test_pv()
 
 if __name__ == "__main__":
